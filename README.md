@@ -6,8 +6,6 @@ Startup scripts for multiclient interop testnet.
 
 Look in the scripts for options - the default config is a small setup using the `minimal` state spec.
 
-⚠️ Nimbus startup script is being reworked to be stand-alone (previously multinet was run from within nimbus)
-
 ```
 cd multinet
 
