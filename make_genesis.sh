@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-# Clone Nimbus Eth 2
+# Nimbus path
 SRCDIR=${NIMBUS_PATH:-"nim-beacon-chain"}
 
 # Read in variables
@@ -15,10 +15,10 @@ rm -rf "$SIMULATION_DIR"
 mkdir -p "$SIMULATION_DIR"
 mkdir -p "$VALIDATORS_DIR"
 
-# Cloning Nimbus
+# Cloning Nimbus if needed
 [[ -d "$SRCDIR" ]] || {
   git clone https://github.com/status-im/nim-beacon-chain "$SRCDIR"
-  pushd "$SRCDIR"
+  pushd "${SRCDIR}"
   # Initial submodule update
   export GIT_LFS_SKIP_SMUDGE=1
   git submodule update --init --recursive
@@ -41,15 +41,15 @@ NIMFLAGS="-d:chronicles_log_level=DEBUG --warnings:off --hints:off --opt:speed"
 DEFS="-d:const_preset=minimal"
 
 # Build Nimbus
-LAST_VALIDATOR_NUM=$(( NUM_VALIDATORS - 1 ))
-LAST_VALIDATOR="$VALIDATORS_DIR/v$(printf '%07d' $LAST_VALIDATOR_NUM).deposit.json"
-
 [[ -x "$BEACON_NODE_BIN" ]] || {
   echo "Building $BEACON_NODE_BIN ($DEFS)"
   nim c -o:"$BEACON_NODE_BIN" $NIMFLAGS $DEFS beacon_chain/beacon_node
 }
 
 # Generate deposits
+LAST_VALIDATOR_NUM=$(( NUM_VALIDATORS - 1 ))
+LAST_VALIDATOR="$VALIDATORS_DIR/v$(printf '%07d' $LAST_VALIDATOR_NUM).deposit.json"
+
 if [ ! -f "${LAST_VALIDATOR}" ]; then
   $BEACON_NODE_BIN makeDeposits \
     --total-deposits="${NUM_VALIDATORS}" \
