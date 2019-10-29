@@ -1,0 +1,11 @@
+# Clients
+artemis
+lighthouse
+lodestar
+nim-beacon-chain
+prysm
+trinity
+
+# Testnet data
+data/
+validators/
