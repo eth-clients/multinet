@@ -9,3 +9,6 @@ trinity
 # Testnet data
 data/
 validators/
+
+# Other
+.vscode/
