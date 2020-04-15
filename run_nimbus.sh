@@ -3,9 +3,9 @@
 set -eo pipefail
 
 # Interop environment variable
-VALIDATORS_START=${1:-20}
-VALIDATORS_NUM=${2:-5}
-VALIDATORS_TOTAL=${3:-30}
+VALIDATORS_START=${1:-0}
+VALIDATORS_NUM=${2:-64}
+VALIDATORS_TOTAL=${3:-64}
 
 source "$(dirname "$0")/vars.sh"
 
@@ -32,7 +32,7 @@ source env.sh
 make update deps
 
 # Compilation flags
-NIMFLAGS="-d:chronicles_log_level=DEBUG --warnings:off --hints:off --opt:speed"
+NIMFLAGS="-d:insecure -d:chronicles_log_level=DEBUG --warnings:off --hints:off --opt:speed"
 
 # For interop, we run the minimal config
 DEFS="-d:const_preset=minimal"
@@ -67,10 +67,12 @@ set -x
 trap 'kill -9 -- -$$' SIGINT EXIT SIGTERM
 
 $BEACON_NODE_BIN \
-  --status-bar:off \
+  --log-level=${LOG_LEVEL:-TRACE} \
   --data-dir:$DATA_DIR \
   --node-name:0 \
   --tcp-port:$PORT \
   --udp-port:$PORT \
   $NAT_FLAG \
-  --state-snapshot:$SNAPSHOT_FILE
+  --state-snapshot:$SNAPSHOT_FILE \
+  --metrics \
+  --verify-finalization

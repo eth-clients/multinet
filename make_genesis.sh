@@ -17,7 +17,7 @@ mkdir -p "$VALIDATORS_DIR"
 
 # Cloning Nimbus if needed
 [[ -d "$SRCDIR" ]] || {
-  git clone https://github.com/status-im/nim-beacon-chain "$SRCDIR"
+  git clone -b devel https://github.com/status-im/nim-beacon-chain "$SRCDIR"
   pushd "${SRCDIR}"
   # Initial submodule update
   export GIT_LFS_SKIP_SMUDGE=1
@@ -35,7 +35,7 @@ source env.sh
 make update deps
 
 # Compilation flags
-NIMFLAGS="-d:chronicles_log_level=DEBUG --warnings:off --hints:off --opt:speed"
+NIMFLAGS="-d:insecure -d:chronicles_log_level=DEBUG --warnings:off --hints:off --opt:speed"
 
 # For interop, we run the minimal config
 DEFS="-d:const_preset=minimal"
@@ -52,9 +52,8 @@ LAST_VALIDATOR="$VALIDATORS_DIR/v$(printf '%07d' $LAST_VALIDATOR_NUM).deposit.js
 
 if [ ! -f "${LAST_VALIDATOR}" ]; then
   $BEACON_NODE_BIN makeDeposits \
-    --total-deposits="${NUM_VALIDATORS}" \
-    --deposits-dir="$VALIDATORS_DIR" \
-    --random-keys=no
+    --quickstart-deposits="${NUM_VALIDATORS}" \
+    --deposits-dir="$VALIDATORS_DIR"
 fi
 
 # Generate genesis file
@@ -64,7 +63,7 @@ if [ ! -f "${SNAPSHOT_FILE}" ]; then
     createTestnet \
     --validators-dir="${VALIDATORS_DIR}" \
     --total-validators="${NUM_VALIDATORS}" \
-    --output-genesis="${SNAPSHOT_FILE}" \
+    --output-genesis="${SNAPSHOT_FILE_JSON}" \
     --output-bootstrap-file="${SIMULATION_DIR}/bootstrap_nodes.txt" \
     --bootstrap-address=127.0.0.1 \
     --bootstrap-port=50000 \

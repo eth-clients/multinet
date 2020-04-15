@@ -4,17 +4,15 @@ set -eu
 
 VALIDATORS_START=${1:-10}
 VALIDATORS_NUM=${2:-5}
-VALIDATORS_TOTAL=${3:-30}
+VALIDATORS_TOTAL=${3:-64}
 
 SRCDIR=${TRINITY_PATH:-"trinity"}
 
 command -v python3 > /dev/null || { echo "install python3 first (https://wiki.python.org/moin/BeginnersGuide/Download)"; exit 1; }
 
 [[ -d "$SRCDIR" ]] || {
-  git clone git@github.com:ethereum/trinity.git "$SRCDIR"
+  git clone https://github.com/ethereum/trinity.git "$SRCDIR"
   pushd "$SRCDIR"
-
-  git checkout interop # temporary interop branch - will get merged soon I expect!
 
   python3 -m venv _ve
 

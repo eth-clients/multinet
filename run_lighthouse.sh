@@ -5,10 +5,15 @@
 set -eu
 
 VALIDATORS_START=${1:-0}
-VALIDATORS_NUM=${2:-5}
-VALIDATORS_TOTAL=${3:-30}
+VALIDATORS_NUM=${2:-64}
+VALIDATORS_TOTAL=${3:-64}
+
+source "$(dirname "$0")/vars.sh"
 
 SRCDIR=${LIGHTHOUSE_PATH:-"lighthouse"}
+
+# Make sure you also have the development packages of openssl installed.
+# For example, `libssl-dev` on Ubuntu or `openssl-devel` on Fedora.
 
 echo Locating protoc...
 if ! command -v protoc; then
@@ -40,15 +45,11 @@ fi
 command -v cargo > /dev/null || { echo "install rust first (https://rust-lang.org)"; exit 1; }
 
 [[ -d "$SRCDIR" ]] || {
-  git clone https://github.com/sigp/lighthouse.git "$SRCDIR"
-  pushd "$SRCDIR"
-  git checkout interop # temporary interop branch - will get merged soon I expect!
-  cargo update
-  popd
+  git clone -b v0.2.0 https://github.com/sigp/lighthouse.git "$SRCDIR"
 }
 
 pushd "$SRCDIR"
-cargo build --release
+cargo build --release --all
 popd
 
 # Fetch genesis time, as set up by start.sh
@@ -70,6 +71,16 @@ cd "$SRCDIR/target/release"
 # fresh start!
 rm -rf ~/.lighthouse
 
-./beacon_node --libp2p-addresses="/ip4/127.0.0.1/tcp/50000" testnet --spec minimal quick $VALIDATORS_TOTAL $GENESIS_TIME &
+# make the testnet
+# --genesis-fork-version: because the spec doesn't currently affect the genesis fork version
+# --max-effective-balance: because the default for lcli is 3.2 ETH and not 32 ETH
+./lcli -s minimal new-testnet --genesis-fork-version 0x00000001 --max-effective-balance 32000000000
+./lcli -s minimal interop-genesis $VALIDATORS_TOTAL -t $GENESIS_TIME
 
-./validator_client testnet -b insecure $VALIDATORS_START $VALIDATORS_NUM
+# beacon node
+./lighthouse bn -t ~/.lighthouse/testnet --spec minimal --http &
+
+# for now lighthouse would run alone with all of the validators by default - add this to the
+# beacon node in order to find nimbus: --boot-nodes "$(cat ../../../data/bootstrap_nodes.txt)"
+
+./lighthouse vc -t ~/.lighthouse/testnet --spec minimal testnet insecure $VALIDATORS_START $VALIDATORS_NUM
