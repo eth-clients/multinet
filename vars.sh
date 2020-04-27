@@ -24,3 +24,7 @@ SNAPSHOT_FILE_JSON="${SIMULATION_DIR}/state_snapshot.json"
 NETWORK_BOOTSTRAP_FILE="${SIMULATION_DIR}/bootstrap_nodes.txt"
 BEACON_NODE_BIN="${SIMULATION_DIR}/beacon_node"
 MASTER_NODE_ADDRESS_FILE="${SIMULATION_DIR}/node-0/beacon_node.address"
+
+# Compilation flags
+NIMFLAGS="-d:insecure -d:chronicles_log_level=TRACE --warnings:off --hints:off --opt:speed"
+#-d:libp2p_secure=noise

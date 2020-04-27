@@ -4,7 +4,7 @@ set -eo pipefail
 
 # Interop environment variable
 VALIDATORS_START=${1:-0}
-VALIDATORS_NUM=${2:-64}
+VALIDATORS_NUM=${2:-32}
 VALIDATORS_TOTAL=${3:-64}
 
 source "$(dirname "$0")/vars.sh"
@@ -30,9 +30,6 @@ source env.sh
 
 # Update submodules
 make update deps
-
-# Compilation flags
-NIMFLAGS="-d:insecure -d:chronicles_log_level=DEBUG --warnings:off --hints:off --opt:speed"
 
 # For interop, we run the minimal config
 DEFS="-d:const_preset=minimal"

@@ -34,9 +34,6 @@ source env.sh
 # Update submodules
 make update deps
 
-# Compilation flags
-NIMFLAGS="-d:insecure -d:chronicles_log_level=DEBUG --warnings:off --hints:off --opt:speed"
-
 # For interop, we run the minimal config
 DEFS="-d:const_preset=minimal"
 
