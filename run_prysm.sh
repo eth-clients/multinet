@@ -3,8 +3,8 @@
 set -eu
 trap 'kill -9 -- -$$' SIGINT EXIT SIGTERM
 
-VALIDATORS_START=${1:-15}
-VALIDATORS_NUM=${2:-5}
+VALIDATORS_START=${1:-0}
+VALIDATORS_NUM=${2:-64}
 VALIDATORS_TOTAL=${3:-64}
 
 SRCDIR=${PRYSM_PATH:-"prysm"}
@@ -28,7 +28,7 @@ fi
 [[ -d "$SRCDIR" ]] || {
   git clone https://github.com/prysmaticlabs/prysm.git "$SRCDIR"
   pushd "$SRCDIR"
-  bazel build --define ssz=minimal //beacon-chain //validator
+  #bazel build --define ssz=minimal //beacon-chain //validator
   popd
 }
 
@@ -38,17 +38,26 @@ cd "$SRCDIR"
 
 rm -rf /tmp/beacon-prysm
 
-"$(bazel info bazel-bin)/beacon-chain/${OS}_stripped/beacon-chain" \
+#"$(bazel info bazel-bin)/beacon-chain/${OS}_stripped/beacon-chain"
+
+
+#--peer=$(cat ../data/bootstrap_nodes.txt) \
+
+#0xD775140349E6A5D12524C6ccc3d6A1d4519D4029
+#0x0000000000000000000000000000000000000000
+
+bazel run //beacon-chain -- \
   --datadir /tmp/beacon-prysm \
   --pprof --verbosity=debug \
   --bootstrap-node= \
-  --peer=$(cat ../data/bootstrap_nodes.txt) \
   --interop-eth1data-votes \
   --deposit-contract=0xD775140349E6A5D12524C6ccc3d6A1d4519D4029 \
-  --interop-genesis-state ../data/state_snapshot.ssz &
+  --interop-genesis-state ~/multinet/data/state_snapshot.ssz #&
 
 sleep 3
 
-"$(bazel info bazel-bin)/validator/${OS}_pure_stripped/validator" \
+#"$(bazel info bazel-bin)/validator/${OS}_pure_stripped/validator"
+
+bazel run //validator -- \
   --interop-start-index=$VALIDATORS_START \
   --interop-num-validators=$VALIDATORS_NUM

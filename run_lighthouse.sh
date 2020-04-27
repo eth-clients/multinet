@@ -4,8 +4,8 @@
 
 set -eu
 
-VALIDATORS_START=${1:-0}
-VALIDATORS_NUM=${2:-64}
+VALIDATORS_START=${1:-32}
+VALIDATORS_NUM=${2:-32}
 VALIDATORS_TOTAL=${3:-64}
 
 source "$(dirname "$0")/vars.sh"
@@ -45,7 +45,7 @@ fi
 command -v cargo > /dev/null || { echo "install rust first (https://rust-lang.org)"; exit 1; }
 
 [[ -d "$SRCDIR" ]] || {
-  git clone -b v0.2.0 https://github.com/sigp/lighthouse.git "$SRCDIR"
+  git clone -b interop_genesis_fork_version_fix https://github.com/onqtam/lighthouse.git "$SRCDIR"
 }
 
 pushd "$SRCDIR"
@@ -68,19 +68,34 @@ cd "$SRCDIR/target/release"
 
 #$export RUST_LOG=libp2p=trace,multistream=trace,gossipsub=trace
 
+#$export RUST_LOG=debug .
+
 # fresh start!
 rm -rf ~/.lighthouse
 
+
+# lcli --spec mainnet new-testnet \
+# --deposit-contract-address 5cA1e00004366Ac85f492887AAab12d0e6418876 \
+# --deposit-contract-deploy-block 2523557 \
+# --effective-balance-increment 1000000000 \
+# --ejection-balance 16000000000 \
+# --eth1-follow-distance 1024 \
+# --genesis-fork-version 0x00000000 \
+# --min-deposit-amount 1000000000 \
+# --min-genesis-active-validator-count 16384 \
+# --min-genesis-delay 86400 \
+# --min-genesis-time 1578009600 \
+# --testnet-dir ~/.lighthouse/topaz
+
 # make the testnet
-# --genesis-fork-version: because the spec doesn't currently affect the genesis fork version
 # --max-effective-balance: because the default for lcli is 3.2 ETH and not 32 ETH
-./lcli -s minimal new-testnet --genesis-fork-version 0x00000001 --max-effective-balance 32000000000
+./lcli -s minimal new-testnet --deposit-contract-address 0000000000000000000000000000000000000000 --max-effective-balance 32000000000
 ./lcli -s minimal interop-genesis $VALIDATORS_TOTAL -t $GENESIS_TIME
 
 # beacon node
-./lighthouse bn -t ~/.lighthouse/testnet --spec minimal --http &
+RUST_LOG=debug ./lighthouse bn -t ~/.lighthouse/testnet --dummy-eth1 --spec minimal --enr-match --http --boot-nodes "$(cat ../../../data/bootstrap_nodes.txt)" #&
 
 # for now lighthouse would run alone with all of the validators by default - add this to the
 # beacon node in order to find nimbus: --boot-nodes "$(cat ../../../data/bootstrap_nodes.txt)"
 
-./lighthouse vc -t ~/.lighthouse/testnet --spec minimal testnet insecure $VALIDATORS_START $VALIDATORS_NUM
+./lighthouse vc -t ~/.lighthouse/testnet --spec minimal --allow-unsynced testnet insecure $VALIDATORS_START $VALIDATORS_NUM
