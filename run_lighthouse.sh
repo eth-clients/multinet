@@ -45,7 +45,7 @@ fi
 command -v cargo > /dev/null || { echo "install rust first (https://rust-lang.org)"; exit 1; }
 
 [[ -d "$SRCDIR" ]] || {
-  git clone -b interop_genesis_fork_version_fix https://github.com/onqtam/lighthouse.git "$SRCDIR"
+  git clone -b master https://github.com/sigp/lighthouse.git "$SRCDIR"
 }
 
 pushd "$SRCDIR"
