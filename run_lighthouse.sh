@@ -4,9 +4,19 @@
 
 set -eu
 
-VALIDATORS_START=${1:-32}
+# unfortunately we cannot use VALIDATORS_START just like with the rest of the clients - with
+# lighthouse it's easy to generate the mock deterministic keys but it's no longer easy to tell
+# it which range of keys to use (perhaps that could be done by deleting the other
+# ranges, but...) and that's why lighthouse always starts from 0
+VALIDATORS_START=${1:-0}
 VALIDATORS_NUM=${2:-32}
 VALIDATORS_TOTAL=${3:-64}
+
+LH_DATADIR=~/.lighthouse/local-testnet
+LH_TESTNET_DIR=$LH_DATADIR/testnet
+LH_BEACON_DIR=$LH_DATADIR/beacon
+LH_VALIDATORS_DIR=$LH_DATADIR/validators
+LH_SECRETS_DIR=$LH_DATADIR/secrets
 
 source "$(dirname "$0")/vars.sh"
 
@@ -66,36 +76,55 @@ trap 'kill -9 -- -$$' SIGINT EXIT SIGTERM
 
 cd "$SRCDIR/target/release"
 
-#$export RUST_LOG=libp2p=trace,multistream=trace,gossipsub=trace
-
-#$export RUST_LOG=debug .
+#$export RUST_LOG=debug,libp2p=trace,multistream=trace,gossipsub=trace
 
 # fresh start!
 rm -rf ~/.lighthouse
 
+# make the testnet - same as here: https://github.com/sigp/lighthouse/blob/61496d8dad41525db95920737125c2942e07592c/scripts/local_testnet/setup.sh
+# `--max-effective-balance` because the default is 3.2 ETH and not 32 ETH
+./lcli \
+  -s minimal \
+  new-testnet \
+  --deposit-contract-address 0000000000000000000000000000000000000000 \
+	--testnet-dir $LH_TESTNET_DIR \
+  --max-effective-balance 32000000000
 
-# lcli --spec mainnet new-testnet \
-# --deposit-contract-address 5cA1e00004366Ac85f492887AAab12d0e6418876 \
-# --deposit-contract-deploy-block 2523557 \
-# --effective-balance-increment 1000000000 \
-# --ejection-balance 16000000000 \
-# --eth1-follow-distance 1024 \
-# --genesis-fork-version 0x00000000 \
-# --min-deposit-amount 1000000000 \
-# --min-genesis-active-validator-count 16384 \
-# --min-genesis-delay 86400 \
-# --min-genesis-time 1578009600 \
-# --testnet-dir ~/.lighthouse/topaz
+./lcli \
+	insecure-validators \
+	--count $VALIDATORS_NUM \
+	--validators-dir $LH_VALIDATORS_DIR \
+	--secrets-dir $LH_SECRETS_DIR
 
-# make the testnet
-# --max-effective-balance: because the default for lcli is 3.2 ETH and not 32 ETH
-./lcli -s minimal new-testnet --deposit-contract-address 0000000000000000000000000000000000000000 --max-effective-balance 32000000000
-./lcli -s minimal interop-genesis $VALIDATORS_TOTAL -t $GENESIS_TIME
+./lcli \
+  -s minimal \
+  interop-genesis \
+	--testnet-dir $LH_TESTNET_DIR \
+  $VALIDATORS_TOTAL \
+  -t $GENESIS_TIME
 
 # beacon node
-RUST_LOG=debug ./lighthouse bn -t ~/.lighthouse/testnet --dummy-eth1 --spec minimal --enr-match --http --boot-nodes "$(cat ../../../data/bootstrap_nodes.txt)" #&
+# TODO not sure if the RUST_LOG and the --debug-level options do the same thing...
+#RUST_LOG=debug \
+./lighthouse \
+	--debug-level info \
+  bn \
+	--testnet-dir $LH_TESTNET_DIR \
+  --dummy-eth1 \
+  --spec minimal \
+  --enr-match \
+  --http \
+  --boot-nodes "$(cat ../../../data/bootstrap_nodes.txt)" &
 
-# for now lighthouse would run alone with all of the validators by default - add this to the
-# beacon node in order to find nimbus: --boot-nodes "$(cat ../../../data/bootstrap_nodes.txt)"
+sleep 5 # enough time for the BN to be up so that the VC can connect to it
 
-./lighthouse vc -t ~/.lighthouse/testnet --spec minimal --allow-unsynced testnet insecure $VALIDATORS_START $VALIDATORS_NUM
+# validator client
+./lighthouse \
+	--debug-level info \
+  vc \
+  --spec minimal \
+	--datadir $LH_VALIDATORS_DIR \
+	--secrets-dir $LH_SECRETS_DIR \
+	--testnet-dir $LH_TESTNET_DIR \
+	--auto-register \
+  --allow-unsynced

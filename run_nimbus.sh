@@ -3,7 +3,7 @@
 set -eo pipefail
 
 # Interop environment variable
-VALIDATORS_START=${1:-0}
+VALIDATORS_START=${1:-32}
 VALIDATORS_NUM=${2:-32}
 VALIDATORS_TOTAL=${3:-64}
 
@@ -54,7 +54,7 @@ mkdir -p $DATA_DIR/validators
 rm -f $DATA_DIR/validators/*
 
 pushd $VALIDATORS_DIR >/dev/null
-  cp $(seq -s " " -f v%07g.privkey $VALIDATORS_START $(($VALIDATORS_START+$VALIDATORS_NUM-1))) $DATA_DIR/validators
+  cp $(seq -s " " -f v%07g.privkey $VALIDATORS_START $((VALIDATORS_START+VALIDATORS_NUM-1))) $DATA_DIR/validators
 popd >/dev/null
 
 rm -rf "$DATA_DIR/dump"
@@ -64,7 +64,7 @@ set -x
 trap 'kill -9 -- -$$' SIGINT EXIT SIGTERM
 
 $BEACON_NODE_BIN \
-  --log-level=${LOG_LEVEL:-TRACE} \
+  --log-level=${LOG_LEVEL:-DEBUG} \
   --data-dir:$DATA_DIR \
   --node-name:0 \
   --tcp-port:$PORT \

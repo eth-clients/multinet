@@ -22,10 +22,10 @@ else
 
   ./run_nimbus.sh &
   sleep 2
-  ./run_trinity.sh &
+  #./run_trinity.sh &
   ./run_lighthouse.sh &
-  ./run_prysm.sh &
-  ./run_lodestar &
-  ./run_artemis.sh &
+  #./run_prysm.sh &
+  #./run_lodestar &
+  #./run_artemis.sh &
   wait
 fi
