@@ -24,3 +24,6 @@ zcli keys generate --to $NUM_VALIDATORS | zcli genesis mock --genesis-time $gene
 
 zcli diff state data/zcli_genesis.ssz data/state_snapshot.ssz
 
+# use this to diff against a lighthouse genesis
+# zcli diff state ~/.lighthouse/local-testnet/testnet/genesis.ssz data/state_snapshot.ssz
+

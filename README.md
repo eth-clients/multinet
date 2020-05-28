@@ -1,6 +1,6 @@
 # Multi-client interop scripts
 
-Startup scripts for multiclient interop testnet.
+Startup scripts for multiclient interop testnet. Currently only the scripts for nimbus and lighthouse have been kept up-to-date.
 
 ## Running
 
@@ -9,12 +9,11 @@ Look in the scripts for options - the default config is a small setup using the 
 ```
 cd multinet
 
-# Create a new genesis 10s in the future
+# Create a new genesis 30s in the future
 ./make_genesis.sh
 
 # You can now start the clients
 ./run_nimbus.sh
-./run_trinity.sh
 ./run_lighthouse.sh
 
 # Or do all in one step, with multitail
