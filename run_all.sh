@@ -21,7 +21,7 @@ else
   trap 'kill -9 -- -$$' SIGINT EXIT SIGTERM
 
   ./run_nimbus.sh &
-  sleep 2
+  sleep 10
   #./run_trinity.sh &
   ./run_lighthouse.sh &
   #./run_prysm.sh &
