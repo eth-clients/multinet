@@ -17,14 +17,19 @@ NUM_VALIDATORS=${VALIDATORS:-64}
 NUM_NODES=${NODES:-1}
 NUM_MISSING_NODES=${MISSING_NODES:-2}
 
-SIMULATION_DIR="${SIM_ROOT}/data"
-VALIDATORS_DIR="${SIM_ROOT}/validators"
-SNAPSHOT_FILE="${SIMULATION_DIR}/state_snapshot.ssz"
-SNAPSHOT_FILE_JSON="${SIMULATION_DIR}/state_snapshot.json"
-NETWORK_BOOTSTRAP_FILE="${SIMULATION_DIR}/bootstrap_nodes.txt"
-BEACON_NODE_BIN="${SIMULATION_DIR}/beacon_node"
-MASTER_NODE_ADDRESS_FILE="${SIMULATION_DIR}/node-0/beacon_node.address"
+DATA_DIR="${SIM_ROOT}/data"
+TESTNET_DIR="${DATA_DIR}/testnet"
+VALIDATORS_DIR="${TESTNET_DIR}/validators"
+SECRETS_DIR="${TESTNET_DIR}/secrets"
+NETWORK_BOOTSTRAP_FILE="${TESTNET_DIR}/bootstrap_nodes.txt"
 
-# Compilation flags
-NIMFLAGS="-d:insecure -d:chronicles_log_level=TRACE --warnings:off --hints:off --opt:speed"
-#-d:libp2p_secure=noise
+ls_validators () {
+  FIRST=$1
+  LAST=$2
+
+  RANGE_LEN=$((LAST - FIRST + 1))
+
+  for VALIDATOR in $(ls ${VALIDATORS_DIR} | tail -n $((NUM_VALIDATORS - FIRST + 1)) | head -n $RANGE_LEN); do
+    echo $VALIDATOR
+  done
+}

@@ -20,6 +20,14 @@ LH_SECRETS_DIR=$LH_DATADIR/secrets
 
 source "$(dirname "$0")/vars.sh"
 
+mkdir -p "$LH_TESTNET_DIR" "$LH_VALIDATORS_DIR"
+
+for validator in $(ls_validators 51 64)
+do
+  cp -r $VALIDATORS_DIR/$validator $LH_VALIDATORS_DIR
+  cp $SECRETS_DIR/$validator $LH_SECRETS_DIR
+done
+
 SRCDIR=${LIGHTHOUSE_PATH:-"lighthouse"}
 
 # Make sure you also have the development packages of openssl installed.
@@ -62,15 +70,6 @@ pushd "$SRCDIR"
 cargo build --release --all
 popd
 
-# Fetch genesis time, as set up by start.sh
-if command -v jq > /dev/null; then
-  GENESIS_TIME=$(jq '.genesis_time' data/state_snapshot.json)
-else
-  GENESIS_TIME=$(grep -oP '(?<=genesis_time": )\w+(?=,)' data/state_snapshot.json)
-fi
-
-echo Genesis time was $GENESIS_TIME
-
 set -x
 trap 'kill -9 -- -$$' SIGINT EXIT SIGTERM
 
@@ -81,40 +80,18 @@ cd "$SRCDIR/target/release"
 # fresh start!
 rm -rf ~/.lighthouse
 
-# make the testnet - same as here: https://github.com/sigp/lighthouse/blob/61496d8dad41525db95920737125c2942e07592c/scripts/local_testnet/setup.sh
-# `--max-effective-balance` because the default is 3.2 ETH and not 32 ETH
-./lcli \
-  -s minimal \
-  new-testnet \
-  --deposit-contract-address 0000000000000000000000000000000000000000 \
-	--testnet-dir $LH_TESTNET_DIR \
-  --max-effective-balance 32000000000
-
-./lcli \
-	insecure-validators \
-	--count $VALIDATORS_NUM \
-	--validators-dir $LH_VALIDATORS_DIR \
-	--secrets-dir $LH_SECRETS_DIR
-
-./lcli \
-  -s minimal \
-  interop-genesis \
-	--testnet-dir $LH_TESTNET_DIR \
-  $VALIDATORS_TOTAL \
-  -t $GENESIS_TIME
-
 # beacon node
 # TODO not sure if the RUST_LOG and the --debug-level options do the same thing...
 #RUST_LOG=debug \
 ./lighthouse \
 	--debug-level info \
   bn \
-	--testnet-dir $LH_TESTNET_DIR \
+	--testnet-dir $TESTNET_DIR \
   --dummy-eth1 \
   --spec minimal \
   --enr-match \
   --http \
-  --boot-nodes "$(cat ../../../data/bootstrap_nodes.txt)" &
+  --boot-nodes "$(cat $TESTNET_DIR/bootstrap_nodes.txt)" &
 
 sleep 5 # enough time for the BN to be up so that the VC can connect to it
 
@@ -125,6 +102,6 @@ sleep 5 # enough time for the BN to be up so that the VC can connect to it
   --spec minimal \
 	--datadir $LH_VALIDATORS_DIR \
 	--secrets-dir $LH_SECRETS_DIR \
-	--testnet-dir $LH_TESTNET_DIR \
+	--testnet-dir $TESTNET_DIR \
 	--auto-register \
   --allow-unsynced
