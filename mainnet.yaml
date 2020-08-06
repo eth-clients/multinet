@@ -4,11 +4,13 @@
 
 # Modified parametesrs:
 SECONDS_PER_SLOT: 6
-SLOTS_PER_EPOCH: 6
 ETH1_FOLLOW_DISTANCE: 1
+GENESIS_DELAY: 30
 MAX_COMMITTEES_PER_SLOT: 1
 
 # Original parameters:
+
+SLOTS_PER_EPOCH: 32
 
 # Misc
 # ---------------------------------------------------------------
@@ -82,8 +84,6 @@ BLS_WITHDRAWAL_PREFIX: 0x00
 
 # Time parameters
 # ---------------------------------------------------------------
-# 172800 seconds (2 days)
-GENESIS_DELAY: 172800
 # 12 seconds
 # 2**0 (= 1) slots 12 seconds
 MIN_ATTESTATION_INCLUSION_DELAY: 1

@@ -35,3 +35,20 @@ ls_validators () {
     echo $VALIDATOR
   done
 }
+
+wait_file () {
+  MSG_DISPLAYED=0
+  while [ ! -f "$1" ]; do
+    if (( MSG_DISPLAYED == 0 )); then
+      echo Waiting for $1 to appear...
+      MSG_DISPLAYED=1
+    fi
+    sleep 0.1
+  done
+}
+
+wait_and_register_enr () {
+  wait_file "$1"
+  cat "$1" >> $TESTNET_DIR/bootstrap_nodes.txt
+}
+

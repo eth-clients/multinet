@@ -36,20 +36,20 @@ GENESIS_TIME=$((NOW + 30))
   --spec $SPEC_VERSION \
   new-testnet \
   --deposit-contract-address 0000000000000000000000000000000000000000 \
-	--testnet-dir $TESTNET_DIR \
+  --testnet-dir $TESTNET_DIR \
   --force \
   --max-effective-balance 32000000000
 
 ./lcli \
-	insecure-validators \
-	--count $NUM_VALIDATORS \
-	--validators-dir $VALIDATORS_DIR \
-	--secrets-dir $SECRETS_DIR
+  insecure-validators \
+  --count $NUM_VALIDATORS \
+  --validators-dir $VALIDATORS_DIR \
+  --secrets-dir $SECRETS_DIR
 
 ./lcli \
   --spec $SPEC_VERSION \
   interop-genesis \
-	--testnet-dir $TESTNET_DIR \
+  --testnet-dir $TESTNET_DIR \
   $NUM_VALIDATORS \
   -t $GENESIS_TIME
 

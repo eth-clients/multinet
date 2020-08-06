@@ -17,10 +17,12 @@ BEACON_NODE_BIN="${NIMBUS_DATA_DIR}/beacon_node"
 NIMFLAGS="-d:insecure -d:chronicles_log_level=TRACE --warnings:off --hints:off --opt:speed"
 #-d:libp2p_secure=noise
 
+rm -rf "$NIMBUS_DATA_DIR"
 mkdir -p "$NIMBUS_VALIDATORS_DIR" "$NIMBUS_SECRETS_DIR"
 
 for validator in $(ls_validators 1 50)
 do
+  echo "Adding validator " $validator
   mkdir -p $NIMBUS_VALIDATORS_DIR/$validator
   cp $VALIDATORS_DIR/$validator/*keystore.json \
     $NIMBUS_VALIDATORS_DIR/$validator/keystore.json
@@ -47,7 +49,7 @@ source env.sh
 # Update submodules
 make update deps
 
-DEFS="-d:const_preset=${SPEC_VERSION}"
+DEFS="-d:const_preset=${TESTNET_DIR}/config.yaml"
 
 echo "Building $BEACON_NODE_BIN ($DEFS)"
 ./env.sh nim c -o:"$BEACON_NODE_BIN" $NIMFLAGS $DEFS beacon_chain/beacon_node
@@ -62,16 +64,26 @@ fi
 rm -rf "$NIMBUS_DATA_DIR/dump"
 mkdir -p "$NIMBUS_DATA_DIR/dump"
 
-set -x
 trap 'kill -9 -- -$$' SIGINT EXIT SIGTERM
 
+BOOTNODES_ARG=""
+if [[ -f $TESTNET_DIR/bootstrap_nodes.txt ]]; then
+  BOOTNODES_ARG="--bootstrap-file=$TESTNET_DIR/bootstrap_nodes.txt"
+fi
+
+set -m # job control
+set -x # print commands
 $BEACON_NODE_BIN \
   --log-level=${LOG_LEVEL:-DEBUG} \
   --data-dir:$NIMBUS_DATA_DIR \
   --tcp-port:$PORT \
   --udp-port:$PORT \
-  $NAT_FLAG \
+  $BOOTNODES_ARG $NAT_FLAG \
   --state-snapshot:$TESTNET_DIR/genesis.ssz \
   --metrics \
-  --verify-finalization
+  --verify-finalization &
+set +x
+
+wait_and_register_enr "${NIMBUS_DATA_DIR}/beacon_node.enr"
+fg
 
