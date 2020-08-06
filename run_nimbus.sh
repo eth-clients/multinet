@@ -47,8 +47,7 @@ source env.sh
 # Update submodules
 make update deps
 
-# For interop, we run the minimal config
-DEFS="-d:const_preset=minimal"
+DEFS="-d:const_preset=${SPEC_VERSION}"
 
 echo "Building $BEACON_NODE_BIN ($DEFS)"
 ./env.sh nim c -o:"$BEACON_NODE_BIN" $NIMFLAGS $DEFS beacon_chain/beacon_node

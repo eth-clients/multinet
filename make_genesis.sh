@@ -35,8 +35,7 @@ source env.sh
 # Update submodules
 make update deps
 
-# For interop, we run the minimal config
-DEFS="-d:const_preset=minimal"
+DEFS="-d:const_preset=${SPEC_VERSION}"
 
 BEACON_NODE_BIN="${DATA_DIR}/beacon_node"
 DEPOSITS_GENERATOR="${DATA_DIR}/deposit_maker"
@@ -74,5 +73,5 @@ fi
 
 echo 0 > $TESTNET_DIR/deposit_contract_block.txt
 echo 0x0000000000000000000000000000000000000000 > $TESTNET_DIR/deposit_contract.txt
-cp "${SIM_ROOT}/minimal.yaml" "$TESTNET_DIR/config.yaml"
+cp "${SIM_ROOT}/${SPEC_VERSION}.yaml" "$TESTNET_DIR/config.yaml"
 

@@ -53,3 +53,7 @@ GENESIS_TIME=$((NOW + 30))
   $NUM_VALIDATORS \
   -t $GENESIS_TIME
 
+echo 0 > $TESTNET_DIR/deposit_contract_block.txt
+echo 0x0000000000000000000000000000000000000000 > $TESTNET_DIR/deposit_contract.txt
+cp "${SIM_ROOT}/${SPEC_VERSION}.yaml" "$TESTNET_DIR/config.yaml"
+
