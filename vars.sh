@@ -13,6 +13,8 @@ cd $(git rev-parse --show-toplevel)
 : ${GIT_ROOT:="$($PWD_CMD)"}
 cd - &>/dev/null
 
+SPEC_VERSION=mainnet
+
 NUM_VALIDATORS=${VALIDATORS:-64}
 NUM_NODES=${NODES:-1}
 NUM_MISSING_NODES=${MISSING_NODES:-2}

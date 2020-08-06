@@ -80,6 +80,11 @@ cd "$SRCDIR/target/release"
 # fresh start!
 rm -rf ~/.lighthouse
 
+BOOTNODES_ARG=""
+if [[ -f $TESTNET_DIR/bootstrap_nodes.txt ]]; then
+  BOOTNODES_ARG=--boot-nodes "$(cat $TESTNET_DIR/bootstrap_nodes.txt)"
+fi
+
 # beacon node
 # TODO not sure if the RUST_LOG and the --debug-level options do the same thing...
 #RUST_LOG=debug \
@@ -88,10 +93,10 @@ rm -rf ~/.lighthouse
   bn \
 	--testnet-dir $TESTNET_DIR \
   --dummy-eth1 \
-  --spec minimal \
+  --spec $SPEC_VERSION \
   --enr-match \
   --http \
-  --boot-nodes "$(cat $TESTNET_DIR/bootstrap_nodes.txt)" &
+  $BOOTNODES_ARG &
 
 sleep 5 # enough time for the BN to be up so that the VC can connect to it
 
@@ -99,7 +104,7 @@ sleep 5 # enough time for the BN to be up so that the VC can connect to it
 ./lighthouse \
 	--debug-level info \
   vc \
-  --spec minimal \
+  --spec $SPEC_VERSION \
 	--datadir $LH_VALIDATORS_DIR \
 	--secrets-dir $LH_SECRETS_DIR \
 	--testnet-dir $TESTNET_DIR \

@@ -33,7 +33,7 @@ GENESIS_TIME=$((NOW + 30))
 # make the testnet - same as here: https://github.com/sigp/lighthouse/blob/61496d8dad41525db95920737125c2942e07592c/scripts/local_testnet/setup.sh
 # `--max-effective-balance` because the default is 3.2 ETH and not 32 ETH
 ./lcli \
-  --spec minimal \
+  --spec $SPEC_VERSION \
   new-testnet \
   --deposit-contract-address 0000000000000000000000000000000000000000 \
 	--testnet-dir $TESTNET_DIR \
@@ -47,7 +47,7 @@ GENESIS_TIME=$((NOW + 30))
 	--secrets-dir $SECRETS_DIR
 
 ./lcli \
-  --spec minimal \
+  --spec $SPEC_VERSION \
   interop-genesis \
 	--testnet-dir $TESTNET_DIR \
   $NUM_VALIDATORS \
