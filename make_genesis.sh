@@ -6,7 +6,8 @@ set -eo pipefail
 SRCDIR=${NIMBUS_PATH:-"nim-beacon-chain"}
 
 # Read in variables
-source "$(dirname "$0")/vars.sh"
+cd "$(dirname "$0")"
+source vars.sh
 
 # Cleanup interop data
 cd "$SIM_ROOT"
@@ -32,20 +33,17 @@ cd "${SRCDIR}"
 # Setup Nimbus build system environment variables
 source env.sh
 
-# Update submodules
-make update deps
+build_once "nimbus_submodules" make update
 
-DEFS="-d:const_preset=${SPEC_VERSION}"
-
-BEACON_NODE_BIN="${DATA_DIR}/beacon_node"
-DEPOSITS_GENERATOR="${DATA_DIR}/deposit_maker"
+PRESET_FILE="${SIM_ROOT}/${SPEC_VERSION}.yaml"
+DEPOSITS_GENERATOR="${BUILD_DIR}/deposit_maker"
 
 # Build Nimbus
-echo "Building $BEACON_NODE_BIN ($DEFS)"
-./env.sh nim c -o:"$BEACON_NODE_BIN" $NIMFLAGS $DEFS beacon_chain/beacon_node
+build_once "nimbus_beacon_node" \
+  ./env.sh nim c -o:"$NIMBUS_BIN" $NIMFLAGS beacon_chain/beacon_node
 
-echo "Building $DEPOSITS_GENERATOR ($DEFS)"
-./env.sh nim c -o:"$DEPOSITS_GENERATOR" $NIMFLAGS $DEFS beacon_chain/deposit_contract
+build_once "nimbus_deposit_maker" \
+  ./env.sh nim c -o:"$DEPOSITS_GENERATOR" $NIMFLAGS beacon_chain/deposit_contract
 
 # Generate deposits
 LAST_VALIDATOR_NUM=$(( NUM_VALIDATORS - 1 ))
@@ -59,7 +57,7 @@ $DEPOSITS_GENERATOR generateSimulationDeposits \
 
 # Generate genesis file
 if [ ! -f "${SNAPSHOT_FILE}" ]; then
-  $BEACON_NODE_BIN \
+  $NIMBUS_BIN \
     --data-dir="${DATA_DIR}/nimbus" \
     createTestnet \
     --deposits-file="$DATA_DIR/deposits.json" \

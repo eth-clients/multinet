@@ -6,9 +6,13 @@ nim-beacon-chain
 prysm
 trinity
 
+# Binaries
+build/
+
 # Testnet data
 data/
-validators/
 
 # Other
 .vscode/
+*.log
+

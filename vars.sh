@@ -20,10 +20,15 @@ NUM_NODES=${NODES:-1}
 NUM_MISSING_NODES=${MISSING_NODES:-2}
 
 DATA_DIR="${SIM_ROOT}/data"
+BUILD_DIR="${SIM_ROOT}/build"
 TESTNET_DIR="${DATA_DIR}/testnet"
 VALIDATORS_DIR="${TESTNET_DIR}/validators"
 SECRETS_DIR="${TESTNET_DIR}/secrets"
 NETWORK_BOOTSTRAP_FILE="${TESTNET_DIR}/bootstrap_nodes.txt"
+PRESET_FILE=${SIM_ROOT}/${SPEC_VERSION}.yaml
+
+NIMFLAGS="-d:insecure -d:chronicles_log_level=TRACE --warnings:off --hints:off --opt:speed -d:const_preset=$PRESET_FILE"
+NIMBUS_BIN="${BUILD_DIR}/nimbus"
 
 ls_validators () {
   FIRST=$1
@@ -50,5 +55,29 @@ wait_file () {
 wait_and_register_enr () {
   wait_file "$1"
   cat "$1" >> $TESTNET_DIR/bootstrap_nodes.txt
+  # Add a new line just in case
+  echo >> $TESTNET_DIR/bootstrap_nodes.txt
 }
 
+build_once () {
+  BUILD_TASK=$1
+  shift
+  BUILD_CMD=$@
+
+  if [ -z "$(git status --porcelain)" ]; then
+    # Working directory is clean
+    GIT_REV=$(git rev-parse --short HEAD)
+    PREV_BUILD_MARKER="$GIT_ROOT/.git/build.$BUILD_TASK.$GIT_REV"
+    if [ ! -f $PREV_BUILD_MARKER ]; then
+      set -x # print commands
+      $BUILD_CMD
+      set +x
+      echo 1 > $PREV_BUILD_MARKER
+    fi
+  else
+    # When the working copy is dirty, we run a regular uncached build
+    set -x # print commands
+    $BUILD_CMD
+    set +x
+  fi
+}

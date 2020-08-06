@@ -2,6 +2,8 @@
 
 # https://github.com/sigp/lighthouse/blob/master/docs/interop.md
 
+export RUST_LOG=trace,libp2p=trace,multistream=trace,gossipsub=trace
+
 set -eu
 
 # unfortunately we cannot use VALIDATORS_START just like with the rest of the clients - with
@@ -12,13 +14,15 @@ VALIDATORS_START=${1:-0}
 VALIDATORS_NUM=${2:-32}
 VALIDATORS_TOTAL=${3:-64}
 
+# Read in variables
+cd "$(dirname "$0")"
+source vars.sh
+
 LH_DATADIR=$(pwd)/data/lighthouse
 LH_TESTNET_DIR=$LH_DATADIR/testnet
 LH_BEACON_DIR=$LH_DATADIR/beacon
 LH_VALIDATORS_DIR=$LH_DATADIR/validators
 LH_SECRETS_DIR=$LH_DATADIR/secrets
-
-source "$(dirname "$0")/vars.sh"
 
 rm -rf "$LH_DATADIR"
 mkdir -p "$LH_TESTNET_DIR" "$LH_VALIDATORS_DIR" "$LH_SECRETS_DIR"
@@ -27,7 +31,7 @@ for validator in $(ls_validators 51 64)
 do
   mkdir -p $LH_VALIDATORS_DIR/$validator
   cp $VALIDATORS_DIR/$validator/*keystore.json $LH_VALIDATORS_DIR/$validator/voting-keystore.json
-  cp $SECRETS_DIR/$validator $LH_SECRETS_DIR
+  cp $SECRETS_DIR/$validator $LH_SECRETS_DIR/
 done
 
 SRCDIR=${LIGHTHOUSE_PATH:-"lighthouse"}
@@ -76,14 +80,12 @@ trap 'kill -9 -- -$$' SIGINT EXIT SIGTERM
 
 cd "$SRCDIR/target/release"
 
-#$export RUST_LOG=debug,libp2p=trace,multistream=trace,gossipsub=trace
-
 # fresh start!
 rm -rf ~/.lighthouse
 
 BOOTNODES_ARG=""
 if [[ -f $TESTNET_DIR/bootstrap_nodes.txt ]]; then
-  BOOTNODES_ARG="--boot-nodes $(cat $TESTNET_DIR/bootstrap_nodes.txt)"
+  BOOTNODES_ARG="--boot-nodes $(cat $TESTNET_DIR/bootstrap_nodes.txt | paste -s -d, -)"
 fi
 
 set -x # print commands
@@ -91,7 +93,7 @@ set -x # print commands
 # TODO not sure if the RUST_LOG and the --debug-level options do the same thing...
 #RUST_LOG=debug \
 ./lighthouse \
-	--debug-level info \
+	--debug-level trace \
   bn \
 	--datadir $LH_DATADIR \
   --testnet-dir $TESTNET_DIR \

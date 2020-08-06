@@ -11,18 +11,11 @@ NIMBUS_DATA_DIR="${DATA_DIR}/nimbus"
 NIMBUS_VALIDATORS_DIR="${NIMBUS_DATA_DIR}/validators"
 NIMBUS_SECRETS_DIR="${NIMBUS_DATA_DIR}/secrets"
 
-BEACON_NODE_BIN="${NIMBUS_DATA_DIR}/beacon_node"
-
-# Compilation flags
-NIMFLAGS="-d:insecure -d:chronicles_log_level=TRACE --warnings:off --hints:off --opt:speed"
-#-d:libp2p_secure=noise
-
 rm -rf "$NIMBUS_DATA_DIR"
 mkdir -p "$NIMBUS_VALIDATORS_DIR" "$NIMBUS_SECRETS_DIR"
 
 for validator in $(ls_validators 1 50)
 do
-  echo "Adding validator " $validator
   mkdir -p $NIMBUS_VALIDATORS_DIR/$validator
   cp $VALIDATORS_DIR/$validator/*keystore.json \
     $NIMBUS_VALIDATORS_DIR/$validator/keystore.json
@@ -46,13 +39,9 @@ cd "${NIMBUS_DIR}"
 # Setup Nimbus build system environment variables
 source env.sh
 
-# Update submodules
-make update deps
-
-DEFS="-d:const_preset=${TESTNET_DIR}/config.yaml"
-
-echo "Building $BEACON_NODE_BIN ($DEFS)"
-./env.sh nim c -o:"$BEACON_NODE_BIN" $NIMFLAGS $DEFS beacon_chain/beacon_node
+build_once "nimbus_submodules" make update
+build_once "nimbus_beacon_node" \
+  ./env.sh nim c -o:"$NIMBUS_BIN" $NIMFLAGS beacon_chain/beacon_node
 
 PORT=$(printf '5%04d' 0)
 
@@ -73,15 +62,14 @@ fi
 
 set -m # job control
 set -x # print commands
-$BEACON_NODE_BIN \
+$NIMBUS_BIN \
   --log-level=${LOG_LEVEL:-DEBUG} \
   --data-dir:$NIMBUS_DATA_DIR \
   --tcp-port:$PORT \
   --udp-port:$PORT \
   $BOOTNODES_ARG $NAT_FLAG \
   --state-snapshot:$TESTNET_DIR/genesis.ssz \
-  --metrics \
-  --verify-finalization &
+  --metrics
 set +x
 
 wait_and_register_enr "${NIMBUS_DATA_DIR}/beacon_node.enr"
