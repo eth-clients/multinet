@@ -21,6 +21,7 @@ mkdir -p "$TESTNET_DIR" "$VALIDATORS_DIR" "$SECRETS_DIR"
 
 cd "$LIGHTHOUSE_DIR"
 cargo build --release --all
+make install-lcli
 
 cd "target/release"
 # fresh start!
