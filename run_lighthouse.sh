@@ -25,7 +25,8 @@ mkdir -p "$LH_TESTNET_DIR" "$LH_VALIDATORS_DIR" "$LH_SECRETS_DIR"
 
 for validator in $(ls_validators 51 64)
 do
-  cp -r $VALIDATORS_DIR/$validator $LH_VALIDATORS_DIR
+  mkdir -p $LH_VALIDATORS_DIR/$validator
+  cp $VALIDATORS_DIR/$validator/*keystore.json $LH_VALIDATORS_DIR/$validator/voting-keystore.json
   cp $SECRETS_DIR/$validator $LH_SECRETS_DIR
 done
 
@@ -82,7 +83,7 @@ rm -rf ~/.lighthouse
 
 BOOTNODES_ARG=""
 if [[ -f $TESTNET_DIR/bootstrap_nodes.txt ]]; then
-  BOOTNODES_ARG=--boot-nodes "$(cat $TESTNET_DIR/bootstrap_nodes.txt)"
+  BOOTNODES_ARG="--boot-nodes $(cat $TESTNET_DIR/bootstrap_nodes.txt)"
 fi
 
 set -x # print commands

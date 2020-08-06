@@ -72,6 +72,7 @@ if [ ! -f "${SNAPSHOT_FILE}" ]; then
 fi
 
 echo 0 > $TESTNET_DIR/deposit_contract_block.txt
+echo 0 > $TESTNET_DIR/deploy_block.txt
 echo 0x0000000000000000000000000000000000000000 > $TESTNET_DIR/deposit_contract.txt
 cp "${SIM_ROOT}/${SPEC_VERSION}.yaml" "$TESTNET_DIR/config.yaml"
 
