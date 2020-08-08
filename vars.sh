@@ -54,9 +54,9 @@ wait_file () {
 
 wait_and_register_enr () {
   wait_file "$1"
-  cat "$1" >> $TESTNET_DIR/bootstrap_nodes.txt
   # Add a new line just in case
   echo >> $TESTNET_DIR/bootstrap_nodes.txt
+  cat "$1" >> $TESTNET_DIR/bootstrap_nodes.txt
 }
 
 build_once () {

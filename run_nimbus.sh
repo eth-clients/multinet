@@ -11,22 +11,25 @@ NIMBUS_DATA_DIR="${DATA_DIR}/nimbus"
 NIMBUS_VALIDATORS_DIR="${NIMBUS_DATA_DIR}/validators"
 NIMBUS_SECRETS_DIR="${NIMBUS_DATA_DIR}/secrets"
 
-rm -rf "$NIMBUS_DATA_DIR"
-mkdir -p "$NIMBUS_VALIDATORS_DIR" "$NIMBUS_SECRETS_DIR"
+if [ ! -d "$NIMBUS_DATA_DIR" ]; then
+  # rm -rf "$NIMBUS_DATA_DIR"
+  mkdir -p "$NIMBUS_VALIDATORS_DIR" "$NIMBUS_SECRETS_DIR"
 
-for validator in $(ls_validators 1 50)
-do
-  mkdir -p $NIMBUS_VALIDATORS_DIR/$validator
-  cp $VALIDATORS_DIR/$validator/*keystore.json \
-    $NIMBUS_VALIDATORS_DIR/$validator/keystore.json
+  for validator in $(ls_validators 1 50)
+  do
+    mkdir -p $NIMBUS_VALIDATORS_DIR/$validator
+    cp $VALIDATORS_DIR/$validator/*keystore.json \
+      $NIMBUS_VALIDATORS_DIR/$validator/keystore.json
 
-  cp $SECRETS_DIR/$validator $NIMBUS_SECRETS_DIR
-done
+    cp $SECRETS_DIR/$validator $NIMBUS_SECRETS_DIR
+  done
+fi
 
 # Cloning Nimbus if needed
 [[ -d "$NIMBUS_DIR" ]] || {
   git clone https://github.com/status-im/nim-beacon-chain "$NIMBUS_DIR"
   pushd "${NIMBUS_DIR}"
+  git checkout devel
   # Initial submodule update
   export GIT_LFS_SKIP_SMUDGE=1
   git submodule update --init --recursive
@@ -63,7 +66,7 @@ fi
 set -m # job control
 set -x # print commands
 $NIMBUS_BIN \
-  --log-level=${LOG_LEVEL:-DEBUG} \
+  --log-level=${LOG_LEVEL:-DEBUG;TRACE:networking,bufferstream,mplex} \
   --data-dir:$NIMBUS_DATA_DIR \
   --tcp-port:$PORT \
   --udp-port:$PORT \
@@ -74,4 +77,3 @@ set +x
 
 wait_and_register_enr "${NIMBUS_DATA_DIR}/beacon_node.enr"
 fg
-
