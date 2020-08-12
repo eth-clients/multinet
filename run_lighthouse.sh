@@ -27,7 +27,7 @@ LH_SECRETS_DIR=$LH_DATADIR/secrets
 rm -rf "$LH_DATADIR"
 mkdir -p "$LH_TESTNET_DIR" "$LH_VALIDATORS_DIR" "$LH_SECRETS_DIR"
 
-for validator in $(ls_validators 51 64)
+for validator in $(ls_validators 33 64)
 do
   mkdir -p $LH_VALIDATORS_DIR/$validator
   cp $VALIDATORS_DIR/$validator/*keystore.json $LH_VALIDATORS_DIR/$validator/voting-keystore.json
@@ -101,7 +101,7 @@ set -x # print commands
   --spec $SPEC_VERSION \
   --enr-match \
   --http \
-  $BOOTNODES_ARG &
+  $BOOTNODES_ARG 2>&1 | tee "$SIM_ROOT/lighthouse-node.log" &
 set +x
 
 wait_and_register_enr "$LH_DATADIR/beacon/network/enr.dat"
@@ -116,5 +116,6 @@ set -x # print commands
 	--secrets-dir $LH_SECRETS_DIR \
 	--testnet-dir $TESTNET_DIR \
 	--auto-register \
-  --allow-unsynced
+  --allow-unsynced 2>&1 | tee "$SIM_ROOT/lighthouse-vc.log"
 set +x
+

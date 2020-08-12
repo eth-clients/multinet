@@ -11,11 +11,11 @@ NIMBUS_DATA_DIR="${DATA_DIR}/nimbus"
 NIMBUS_VALIDATORS_DIR="${NIMBUS_DATA_DIR}/validators"
 NIMBUS_SECRETS_DIR="${NIMBUS_DATA_DIR}/secrets"
 
-if [ ! -d "$NIMBUS_DATA_DIR" ]; then
+if ((1)); then
   # rm -rf "$NIMBUS_DATA_DIR"
   mkdir -p "$NIMBUS_VALIDATORS_DIR" "$NIMBUS_SECRETS_DIR"
 
-  for validator in $(ls_validators 1 50)
+  for validator in $(ls_validators 1 32)
   do
     mkdir -p $NIMBUS_VALIDATORS_DIR/$validator
     cp $VALIDATORS_DIR/$validator/*keystore.json \
@@ -66,7 +66,8 @@ fi
 set -m # job control
 set -x # print commands
 $NIMBUS_BIN \
-  --log-level=${LOG_LEVEL:-DEBUG;TRACE:networking,bufferstream,mplex} \
+  --log-level=${LOG_LEVEL:-TRACE;TRACE:networking,bufferstream,mplex} \
+  --log-file="$SIM_ROOT/nimbus.log" \
   --data-dir:$NIMBUS_DATA_DIR \
   --tcp-port:$PORT \
   --udp-port:$PORT \
