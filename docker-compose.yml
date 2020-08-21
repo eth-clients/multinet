@@ -1,0 +1,58 @@
+version: '3.4'
+
+services:
+  genesis:
+    build:
+      context: ./
+      target: genesis
+    volumes: 
+      - multinet-data:/root/multinet/repo/data
+
+  deposits:
+    build:
+      context: ./
+      target: deposits
+    volumes: 
+      - multinet-deposits:/root/multinet/repo/deposits
+
+  nimbus:
+    depends_on: 
+      - genesis
+      - deposits
+    build:
+      context: ./
+      target: nimbus
+    environment: 
+      - LOG_LEVEL=DEBUG
+    volumes: 
+      # editable source here
+      - nimbus-source:/root/multinet/repo/nim-beacon-chain
+      - multinet-deposits:/root/multinet/repo/deposits
+      - multinet-data:/root/multinet/repo/data
+    command: "/bin/bash run_nimbus.sh"
+    ports: 
+      - 50000:50000
+    
+  lighthouse:
+    depends_on: 
+      - genesis
+      - deposits
+    links: 
+      - nimbus
+    build:
+      context: ./
+      target: lighthouse
+    environment: 
+      - RUST_LOG=trace,libp2p=trace,multistream=trace,gossipsub=trace
+    volumes: 
+      # editable source here
+      - lighthouse-source:/root/multinet/repo/lighthouse
+      - multinet-deposits:/root/multinet/repo/deposits
+      - multinet-data:/root/multinet/repo/data
+    command: "/bin/bash run_lighthouse.sh"
+
+volumes: 
+  multinet-data:
+  multinet-deposits:
+  nimbus-source:
+  lighthouse-source:
