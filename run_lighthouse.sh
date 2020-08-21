@@ -7,7 +7,7 @@ cd "$(dirname "$0")"
 source vars.sh
 
 LH_DATADIR="/root/multinet/repo/deposits/lighthouse"
-LH_VALIDATORS_DIR=$LH_DATADIR/validators
+LH_VALIDATORS_DIR=$LH_DATADIR/keys
 LH_SECRETS_DIR=$LH_DATADIR/secrets
 
 SRCDIR=${LIGHTHOUSE_PATH:-"lighthouse"}
@@ -26,6 +26,10 @@ rm -rf ~/.lighthouse
 BOOTNODES_ARG=""
 if [[ -f $TESTNET_DIR/bootstrap_nodes.txt ]]; then
   BOOTNODES_ARG="--boot-nodes $(cat $TESTNET_DIR/bootstrap_nodes.txt | paste -s -d, -)"
+fi
+
+if [[ -f /root/multinet/repo/deposits/lighthouse/beacon/pubkey_cache.ssz ]]; then
+  rm /root/multinet/repo/deposits/lighthouse/beacon/pubkey_cache.ssz
 fi
 
 set -x # print commands

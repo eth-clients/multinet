@@ -29,7 +29,7 @@ services:
       - nimbus-source:/root/multinet/repo/nim-beacon-chain
       - multinet-deposits:/root/multinet/repo/deposits
       - multinet-data:/root/multinet/repo/data
-    command: "/bin/bash run_nimbus.sh"
+    command: bash -c "./make_genesis.sh && ./run_nimbus.sh"
     ports: 
       - 50000:50000
     
@@ -49,7 +49,7 @@ services:
       - lighthouse-source:/root/multinet/repo/lighthouse
       - multinet-deposits:/root/multinet/repo/deposits
       - multinet-data:/root/multinet/repo/data
-    command: "/bin/bash run_lighthouse.sh"
+    command: bash -c "./wait_for.sh -t 0 nimbus:50000 -- ./run_lighthouse.sh"
 
 volumes: 
   multinet-data:

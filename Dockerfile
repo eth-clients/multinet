@@ -127,19 +127,21 @@ COPY ./.git /root/multinet/repo/.git
 COPY ./vars.sh /root/multinet/repo
 COPY ./mainnet.yaml /root/multinet/repo
 
-COPY ./make_genesis.sh /root/multinet/repo
-RUN ["/bin/bash", "make_genesis.sh"]
-
-# this one is wrong, let nimbus fill this later
-RUN rm /root/multinet/repo/data/testnet/bootstrap_nodes.txt
-
-VOLUME ["/root/multinet/repo/data"]
+COPY ./build_genesis.sh /root/multinet/repo
+RUN ["/bin/bash", "build_genesis.sh"]
 
 FROM genesis as nimbus
 
 COPY ./build_nimbus.sh /root/multinet/repo
 RUN ["/bin/bash", "build_nimbus.sh"]
+
 COPY ./run_nimbus.sh /root/multinet/repo
+RUN chmod +x /root/multinet/repo/run_nimbus.sh
+
+COPY ./make_genesis.sh /root/multinet/repo
+RUN chmod +x /root/multinet/repo/make_genesis.sh
+
+VOLUME ["/root/multinet/repo/data"]
 
 # This the source we CAN edit, just mount it somehow (docker run -v xxx:xxx ubuntu.. VS code integration etc)
 VOLUME ["/root/multinet/repo/nim-beacon-chain"]
@@ -151,6 +153,8 @@ RUN apt -y install cmake
 COPY ./build_lighthouse.sh /root/multinet/repo
 RUN ["/bin/bash", "build_lighthouse.sh"]
 COPY ./run_lighthouse.sh /root/multinet/repo
+
+COPY ./wait_for.sh /root/multinet/repo
 
 # This the source we CAN edit, just mount it somehow (docker run -v xxx:xxx ubuntu.. VS code integration etc)
 VOLUME ["/root/multinet/repo/lighthouse"]
