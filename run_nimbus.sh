@@ -39,7 +39,7 @@ fi
 set -m # job control
 set -x # print commands
 $NIMBUS_BIN \
-  --log-level=${LOG_LEVEL:-TRACE;TRACE:networking,bufferstream,mplex} \
+  --log-level=$LOG_LEVEL \
   --log-file="$SIM_ROOT/nimbus.log" \
   --data-dir:$NIMBUS_DATA_DIR \
   --tcp-port:$PORT \

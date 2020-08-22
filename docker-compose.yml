@@ -16,29 +16,31 @@ services:
       - multinet-deposits:/root/multinet/repo/deposits
 
   nimbus:
+    hostname: nimbus
     depends_on: 
       - genesis
       - deposits
     build:
       context: ./
       target: nimbus
+    networks:
+      - mesh
     environment: 
-      - LOG_LEVEL=DEBUG
+      LOG_LEVEL: "INFO;TRACE:switch"
     volumes: 
       # editable source here
       - nimbus-source:/root/multinet/repo/nim-beacon-chain
       - multinet-deposits:/root/multinet/repo/deposits
       - multinet-data:/root/multinet/repo/data
     command: bash -c "./make_genesis.sh && ./run_nimbus.sh"
-    ports: 
-      - 50000:50000
     
   lighthouse:
+    hostname: lighthouse
     depends_on: 
       - genesis
       - deposits
-    links: 
-      - nimbus
+    networks:
+      - mesh
     build:
       context: ./
       target: lighthouse
@@ -56,3 +58,6 @@ volumes:
   multinet-deposits:
   nimbus-source:
   lighthouse-source:
+
+networks:
+  mesh:
