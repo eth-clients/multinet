@@ -44,7 +44,7 @@ $NIMBUS_BIN \
   --total-validators="${NUM_VALIDATORS}" \
   --output-genesis="${TESTNET_DIR}/genesis.ssz" \
   --output-bootstrap-file="${TESTNET_DIR}/bootstrap_nodes.txt" \
-  --bootstrap-address=127.0.0.1 \
+  --bootstrap-address=172.20.0.10 \
   --bootstrap-port=50000 \
   --genesis-offset=30 # Delay in seconds
 

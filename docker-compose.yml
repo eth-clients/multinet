@@ -24,7 +24,8 @@ services:
       context: ./
       target: nimbus
     networks:
-      - mesh
+      mesh:
+        ipv4_address: 172.20.0.10
     environment: 
       LOG_LEVEL: "INFO;TRACE:switch"
     volumes: 
@@ -61,3 +62,6 @@ volumes:
 
 networks:
   mesh:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24

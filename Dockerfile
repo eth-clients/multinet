@@ -119,8 +119,6 @@ RUN go/bin/eth2-val-tools assign \
   --key-man-loc="/root/multinet/repo/deposits/wallets" \
   --wallet-name="multinet-wallet"
 
-VOLUME ["/root/multinet/repo/deposits"]
-
 FROM tools as genesis
 
 COPY ./.git /root/multinet/repo/.git
@@ -141,10 +139,7 @@ RUN chmod +x /root/multinet/repo/run_nimbus.sh
 COPY ./make_genesis.sh /root/multinet/repo
 RUN chmod +x /root/multinet/repo/make_genesis.sh
 
-VOLUME ["/root/multinet/repo/data"]
-
-# This the source we CAN edit, just mount it somehow (docker run -v xxx:xxx ubuntu.. VS code integration etc)
-VOLUME ["/root/multinet/repo/nim-beacon-chain"]
+COPY ./wait_for.sh /root/multinet/repo
 
 FROM genesis as lighthouse
 
@@ -155,7 +150,3 @@ RUN ["/bin/bash", "build_lighthouse.sh"]
 COPY ./run_lighthouse.sh /root/multinet/repo
 
 COPY ./wait_for.sh /root/multinet/repo
-
-# This the source we CAN edit, just mount it somehow (docker run -v xxx:xxx ubuntu.. VS code integration etc)
-VOLUME ["/root/multinet/repo/lighthouse"]
-

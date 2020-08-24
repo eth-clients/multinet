@@ -21,10 +21,7 @@ build_once "nimbus_beacon_node" \
 
 PORT=$(printf '5%04d' 0)
 
-NAT_FLAG="--nat:none"
-if [ "${NAT:-}" == "1" ]; then
-  NAT_FLAG="--nat:any"
-fi
+NAT_FLAG="--nat:extip:172.20.0.10"
 
 rm -rf "$NIMBUS_DATA_DIR/dump"
 mkdir -p "$NIMBUS_DATA_DIR/dump"
@@ -49,5 +46,5 @@ $NIMBUS_BIN \
   --metrics
 set +x
 
-wait_and_register_enr "${NIMBUS_DATA_DIR}/beacon_node.enr"
+wait_and_register_enr "$NIMBUS_DATA_DIR/beacon_node.enr"
 fg
