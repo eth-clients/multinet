@@ -150,3 +150,13 @@ RUN ["/bin/bash", "build_lighthouse.sh"]
 COPY ./run_lighthouse.sh /root/multinet/repo
 
 COPY ./wait_for.sh /root/multinet/repo
+
+FROM genesis as prysm
+
+RUN apt -y install python3
+
+COPY ./build_prysm.sh /root/multinet/repo
+RUN ["/bin/bash", "build_prysm.sh"]
+COPY ./run_prysm.sh /root/multinet/repo
+
+COPY ./wait_for.sh /root/multinet/repo
