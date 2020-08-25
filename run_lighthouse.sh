@@ -23,9 +23,12 @@ cd "$SRCDIR/target/release"
 
 # fresh start!
 rm -rf ~/.lighthouse
+rm -rf $LH_DATADIR/beacon
 
 # Wait nimbus (bootstrap node)
 wait_enr "$NBC_DATADIR/beacon_node.enr"
+
+sleep 2
 
 BOOTNODES_ARG=""
 if [[ -f $TESTNET_DIR/bootstrap_nodes.txt ]]; then

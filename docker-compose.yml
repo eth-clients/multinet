@@ -69,7 +69,7 @@ services:
       - lighthouse-source:/root/multinet/repo/lighthouse
       - multinet-deposits:/root/multinet/repo/deposits
       - multinet-data:/root/multinet/repo/data
-    command: bash -c "./wait_for.sh -t 0 nimbus:50000 -- echo"
+    command: bash -c "./wait_for.sh -t 0 nimbus:50000 -- ./run_prysm.sh"
 
 volumes: 
   multinet-data:

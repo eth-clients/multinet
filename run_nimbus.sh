@@ -23,6 +23,8 @@ PORT=$(printf '5%04d' 0)
 
 NAT_FLAG="--nat:extip:172.20.0.10"
 
+rm -rf "$NIMBUS_DATA_DIR/db"
+rm -f "$NIMBUS_DATA_DIR/genesis.ssz"
 rm -rf "$NIMBUS_DATA_DIR/dump"
 mkdir -p "$NIMBUS_DATA_DIR/dump"
 
