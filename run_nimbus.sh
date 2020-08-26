@@ -24,19 +24,20 @@ PORT=$(printf '5%04d' 0)
 NAT_FLAG="--nat:extip:172.20.0.10"
 
 rm -rf "$NIMBUS_DATA_DIR/db"
+rm -f "$NIMBUS_DATA_DIR/beacon_node.enr"
 rm -f "$NIMBUS_DATA_DIR/genesis.ssz"
 rm -rf "$NIMBUS_DATA_DIR/dump"
 mkdir -p "$NIMBUS_DATA_DIR/dump"
-
-trap 'kill -9 -- -$$' SIGINT EXIT SIGTERM
 
 BOOTNODES_ARG=""
 if [[ -f $TESTNET_DIR/bootstrap_nodes.txt ]]; then
   BOOTNODES_ARG="--bootstrap-file=$TESTNET_DIR/bootstrap_nodes.txt"
 fi
 
-set -m # job control
 set -x # print commands
+
+wait_and_register_enr "$NIMBUS_DATA_DIR/beacon_node.enr" &
+
 $NIMBUS_BIN \
   --log-level=$LOG_LEVEL \
   --log-file="$SIM_ROOT/nimbus.log" \
@@ -46,7 +47,3 @@ $NIMBUS_BIN \
   $BOOTNODES_ARG $NAT_FLAG \
   --state-snapshot:$TESTNET_DIR/genesis.ssz \
   --metrics
-set +x
-
-wait_and_register_enr "$NIMBUS_DATA_DIR/beacon_node.enr"
-fg

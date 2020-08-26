@@ -5,6 +5,7 @@ set -eu
 source vars.sh
 
 NBC_DATADIR="/root/multinet/repo/deposits/nimbus"
+PRY_DATADIR="/root/multinet/repo/deposits/prysm"
 
 VALIDATORS_START=${1:-0}
 VALIDATORS_NUM=${2:-64}
@@ -41,6 +42,9 @@ cd "$SRCDIR"
 
 rm -rf /tmp/beacon-prysm
 
+# workaround deposits generated json file path
+ln -s -f $PRY_DATADIR/prysm/wallets /root/multinet/repo/deposits/wallets
+
 # Wait nimbus (bootstrap node)
 wait_enr "$NBC_DATADIR/beacon_node.enr"
 
@@ -56,21 +60,20 @@ fi
 
 bazel run //beacon-chain -- \
   $BOOTNODES_ARG \
-  --disable-discv5 \
   --force-clear-db \
-  --datadir /tmp/beacon-prysm \
+  --datadir=/tmp/beacon-prysm \
   --pprof \
-  --verbosity debug \
+  --verbosity=debug \
   --interop-eth1data-votes \
-  --chain-config-file $TESTNET_DIR/config.yaml \
-  --contract-deployment-block 0 \
-  --deposit-contract 0x8A04d14125D0FDCDc742F4A05C051De07232EDa4 \ 
-  --interop-genesis-state $TESTNET_DIR/genesis.ssz #&
+  --chain-config-file=$TESTNET_DIR/config.yaml \
+  --contract-deployment-block=0 \
+  --deposit-contract=0x8A04d14125D0FDCDc742F4A05C051De07232EDa4 \
+  --interop-genesis-state=$TESTNET_DIR/genesis.ssz &
 
-# sleep 3
-
-# #"$(bazel info bazel-bin)/validator/${OS}_pure_stripped/validator"
-
-# bazel run //validator -- \
-#   --interop-start-index=$VALIDATORS_START \
-#   --interop-num-validators=$VALIDATORS_NUM
+bazel run //validator -- \
+  --chain-config-file=$TESTNET_DIR/config.yaml \
+  --disable-accounts-v2=true \
+  --verbosity=trace \
+  --password="" \
+  --keymanager=wallet \
+  --keymanageropts=$PRY_DATADIR/prysm/keymanager_opts.json

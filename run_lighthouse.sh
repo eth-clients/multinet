@@ -61,7 +61,7 @@ set -x # print commands
   --http \
   $BOOTNODES_ARG 2>&1 | tee "$SIM_ROOT/lighthouse-node.log" &
 
-wait_and_register_enr "$LH_DATADIR/beacon/network/enr.dat"
+# wait_and_register_enr "$LH_DATADIR/beacon/network/enr.dat"
 
 # validator client
 ./lighthouse \

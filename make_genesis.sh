@@ -49,6 +49,11 @@ $NIMBUS_BIN \
   --genesis-offset=30 # Delay in seconds
 
 
+# do not use this, it's wrong
+# will cause:
+# got error on dial: failed to negotiate security protocol: peer id mismatch: expected 16Uiu2HAmULPTzyRTVh6zoW9KZ3zEYow1nfHMiZX6prihTudv2tKG, but remote key matches 16Uiu2HAmFoKBrhv5f3xF5V4LH91d4qLuJ89SJs5kyCA7ZUgDAVrM
+rm -f "${TESTNET_DIR}/bootstrap_nodes.txt" 
+
 echo 0 > $TESTNET_DIR/deposit_contract_block.txt
 echo 0 > $TESTNET_DIR/deploy_block.txt
 echo 0x0000000000000000000000000000000000000000 > $TESTNET_DIR/deposit_contract.txt

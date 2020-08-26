@@ -28,6 +28,7 @@ fi
 [[ -d "$SRCDIR" ]] || {
   git clone https://github.com/prysmaticlabs/prysm.git "$SRCDIR"
   pushd "$SRCDIR"
+  # git checkout fixInterop
   #bazel build --define ssz=minimal //beacon-chain //validator
   popd
 }

@@ -56,8 +56,8 @@ wait_file () {
 wait_and_register_enr () {
   echo "Registering ENR"
   wait_file "$1"
-  # Add a new line just in case
-  echo >> $TESTNET_DIR/bootstrap_nodes.txt
+  # # Add a new line just in case
+  # echo >> $TESTNET_DIR/bootstrap_nodes.txt
   cat "$1" >> $TESTNET_DIR/bootstrap_nodes.txt
 }
 
