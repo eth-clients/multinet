@@ -73,7 +73,7 @@ bazel run //beacon-chain -- \
 bazel run //validator -- \
   --chain-config-file=$TESTNET_DIR/config.yaml \
   --disable-accounts-v2=true \
-  --verbosity=trace \
+  --verbosity=debug \
   --password="" \
   --keymanager=wallet \
   --keymanageropts=$PRY_DATADIR/prysm/keymanager_opts.json

@@ -4,6 +4,9 @@ set -eo pipefail
 
 # Nimbus path
 SRCDIR=${NIMBUS_PATH:-"nim-beacon-chain"}
+DEPOSITS_DIR="/root/multinet/repo/deposits"
+
+NUM_VALIDATORS=96
 
 # Read in variables
 cd "$(dirname "$0")"
@@ -26,27 +29,19 @@ build_once "nimbus_submodules" make update
 PRESET_FILE="${SIM_ROOT}/${SPEC_VERSION}.yaml"
 DEPOSITS_GENERATOR="${BUILD_DIR}/deposit_maker"
 
-# Generate deposits
-LAST_VALIDATOR_NUM=$(( NUM_VALIDATORS - 1 ))
-LAST_VALIDATOR="$VALIDATORS_DIR/v$(printf '%07d' $LAST_VALIDATOR_NUM).deposit.json"
-
-$DEPOSITS_GENERATOR generateSimulationDeposits \
-  --count="${NUM_VALIDATORS}" \
-  --out-validators-dir="$VALIDATORS_DIR" \
-  --out-secrets-dir="$SECRETS_DIR" \
-  --out-deposits-file="$DATA_DIR/deposits.json"
-
 # Generate genesis file
 $NIMBUS_BIN \
   --data-dir="${DATA_DIR}/nimbus" \
   createTestnet \
-  --deposits-file="$DATA_DIR/deposits.json" \
-  --total-validators="${NUM_VALIDATORS}" \
+  --deposits-file=$DEPOSITS_DIR/deposits.json \
+  --total-validators=$NUM_VALIDATORS \
   --output-genesis="${TESTNET_DIR}/genesis.ssz" \
   --output-bootstrap-file="${TESTNET_DIR}/bootstrap_nodes.txt" \
   --bootstrap-address=172.20.0.10 \
   --bootstrap-port=50000 \
   --genesis-offset=30 # Delay in seconds
+
+echo "Genesis is ready!"
 
 
 # do not use this, it's wrong

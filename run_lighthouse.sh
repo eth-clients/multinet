@@ -13,13 +13,7 @@ LH_SECRETS_DIR=$LH_DATADIR/secrets
 
 SRCDIR=${LIGHTHOUSE_PATH:-"lighthouse"}
 
-pushd "$SRCDIR"
-cargo build --release --all
-popd
-
-trap 'kill -9 -- -$$' SIGINT EXIT SIGTERM
-
-cd "$SRCDIR/target/release"
+cd "$SRCDIR"
 
 # fresh start!
 rm -rf ~/.lighthouse
@@ -48,8 +42,8 @@ set -x # print commands
 # beacon node
 # TODO not sure if the RUST_LOG and the --debug-level options do the same thing...
 #RUST_LOG=debug \
-./lighthouse \
-	--debug-level trace \
+cargo run --release --bin lighthouse -- \
+	--debug-level debug \
   bn \
 	--datadir $LH_DATADIR \
   --testnet-dir $TESTNET_DIR \
@@ -64,8 +58,8 @@ set -x # print commands
 # wait_and_register_enr "$LH_DATADIR/beacon/network/enr.dat"
 
 # validator client
-./lighthouse \
-	--debug-level info \
+cargo run --release --bin lighthouse -- \
+	--debug-level debug \
   vc \
   --spec $SPEC_VERSION \
 	--datadir $LH_VALIDATORS_DIR \

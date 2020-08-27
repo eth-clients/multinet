@@ -49,5 +49,5 @@ command -v cargo > /dev/null || { echo "install rust first (https://rust-lang.or
 }
 
 pushd "$SRCDIR"
-cargo build --release --all
+cargo build --release --bin lighthouse
 popd

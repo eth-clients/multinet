@@ -1,17 +1,14 @@
 FROM ubuntu:20.04 as tools
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get -y update
-RUN apt-get -y install tzdata
-RUN apt-get -y install build-essential git protobuf-compiler golang
+RUN apt -y update
+RUN apt -y install tzdata
+RUN apt -y install build-essential git protobuf-compiler golang python3 cmake wget curl gnupg jq
 
-RUN apt install curl gnupg
 RUN curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg
 RUN mv bazel.gpg /etc/apt/trusted.gpg.d/
 RUN echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
 RUN apt -y update && apt -y install bazel bazel-3.2.0
-
-RUN apt -y install wget
 
 ENV RUSTUP_HOME=/usr/local/rustup
 ENV CARGO_HOME=/usr/local/cargo
@@ -30,8 +27,6 @@ RUN set -eux; \
 
 RUN rustup toolchain install nightly
 
-RUN apt -y install redis-tools
-
 WORKDIR /root/multinet/repo
 ENV HOME=/root/multinet
 
@@ -39,10 +34,11 @@ FROM tools as deposits
 
 WORKDIR /root/multinet
 
+ENV ETH2_TOOLS_COMMIT b1d4db5ef0fbee2cd6e132c04a6f9b8890043cc7
 RUN git clone https://github.com/protolambda/eth2-val-tools.git 
 WORKDIR /root/multinet/eth2-val-tools
 
-RUN git checkout 437be13bbd37c5ea45ef6036586480b02ad09ac4
+RUN git checkout ${ETH2_TOOLS_COMMIT}
 
 RUN go install . && \
 cd .. && \
@@ -119,6 +115,20 @@ RUN go/bin/eth2-val-tools assign \
   --key-man-loc="/root/multinet/repo/deposits/wallets" \
   --wallet-name="multinet-wallet"
 
+# redo assigments on all 96 to convert it into nimbus deposits.json
+RUN go/bin/eth2-val-tools deposit-data \
+--source-min=0 \
+--source-max=96 \
+--amount="$DEPOSIT_AMOUNT" \
+--fork-version="$FORK_VERSION" \
+--withdrawals-mnemonic="$WITHDRAWALS_MNEMONIC" \
+--validators-mnemonic="$VALIDATORS_MNEMONIC" > /root/multinet/repo/deposits/assignments.json 2>&1
+
+RUN cat /root/multinet/repo/deposits/assignments.json | jq -s '.' > /root/multinet/repo/deposits/deposits.json
+RUN cat /root/multinet/repo/deposits/deposits.json | jq 'map({pubkey:.pubkey, signature:.signature,withdrawal_credentials:.withdrawal_credentials,amount:.value})' > /root/multinet/repo/deposits/deposits.json
+
+VOLUME ["/root/multinet/repo/deposits"]
+
 FROM tools as genesis
 
 COPY ./.git /root/multinet/repo/.git
@@ -143,8 +153,6 @@ COPY ./wait_for.sh /root/multinet/repo
 
 FROM genesis as lighthouse
 
-RUN apt -y install cmake
-
 COPY ./build_lighthouse.sh /root/multinet/repo
 RUN ["/bin/bash", "build_lighthouse.sh"]
 COPY ./run_lighthouse.sh /root/multinet/repo
@@ -152,8 +160,6 @@ COPY ./run_lighthouse.sh /root/multinet/repo
 COPY ./wait_for.sh /root/multinet/repo
 
 FROM genesis as prysm
-
-RUN apt -y install python3
 
 COPY ./build_prysm.sh /root/multinet/repo
 RUN ["/bin/bash", "build_prysm.sh"]
