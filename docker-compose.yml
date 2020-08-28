@@ -1,25 +1,8 @@
 version: '3.4'
 
 services:
-  genesis:
-    build:
-      context: ./
-      target: genesis
-    volumes: 
-      - multinet-data:/root/multinet/repo/data
-
-  deposits:
-    build:
-      context: ./
-      target: deposits
-    volumes: 
-      - multinet-deposits:/root/multinet/repo/deposits
-
   nimbus:
     hostname: nimbus
-    depends_on: 
-      - genesis
-      - deposits
     build:
       context: ./
       target: nimbus
@@ -37,16 +20,13 @@ services:
     
   lighthouse:
     hostname: lighthouse
-    depends_on: 
-      - genesis
-      - deposits
     networks:
       - mesh
     build:
       context: ./
       target: lighthouse
-    environment: 
-      - RUST_LOG=trace,libp2p=trace,multistream=trace,gossipsub=trace
+    # environment: 
+    #   - RUST_LOG=trace,libp2p=trace,multistream=trace,gossipsub=trace
     volumes: 
       # editable source here
       - lighthouse-source:/root/multinet/repo/lighthouse
@@ -56,9 +36,6 @@ services:
 
   prysm:
     hostname: prysm
-    depends_on: 
-      - genesis
-      - deposits
     networks:
       - mesh
     build:
