@@ -5,7 +5,12 @@ set -eu
 source vars.sh
 
 NBC_DATADIR="/root/multinet/repo/deposits/nimbus"
+
 PRY_DATADIR="/root/multinet/repo/deposits/prysm"
+# k8s check
+if [ "$MULTINET_POD_NAME" != "" ] then
+  PRY_DATADIR="/root/multinet/repo/deposits/$MULTINET_POD_NAME"
+fi
 
 VALIDATORS_START=${1:-0}
 VALIDATORS_NUM=${2:-64}

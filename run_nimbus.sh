@@ -7,7 +7,11 @@ source "$(dirname "$0")/vars.sh"
 # Nimbus path
 NIMBUS_DIR=${NIMBUS_PATH:-"nim-beacon-chain"}
 
-NIMBUS_DATA_DIR="/root/multinet/repo/deposits/nimbus" # static docker path
+NIMBUS_DATA_DIR="/root/multinet/repo/deposits/nimbus"
+# k8s check
+if [ "$MULTINET_POD_NAME" != "" ] then
+  NIMBUS_DATA_DIR="/root/multinet/repo/deposits/$MULTINET_POD_NAME"
+fi
 
 # Switching to Nimbus folder
 cd "${NIMBUS_DIR}"
@@ -15,9 +19,7 @@ cd "${NIMBUS_DIR}"
 # Setup Nimbus build system environment variables
 source env.sh
 
-build_once "nimbus_submodules" make update
-build_once "nimbus_beacon_node" \
-  ./env.sh nim c -o:"$NIMBUS_BIN" $NIMFLAGS beacon_chain/beacon_node
+./env.sh nim c -o:"$NIMBUS_BIN" $NIMFLAGS beacon_chain/beacon_node
 
 PORT=$(printf '5%04d' 0)
 

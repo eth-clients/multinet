@@ -2,6 +2,10 @@
 
 GO_PATH=/root/multinet/go
 
+NIMBUS_NODES=${NIMBUS_NODES:-1}
+LIGHTHOUSE_NODES=${LIGHTHOUSE_NODES:-1}
+PRYSM_NODES=${PRYSM_NODES:-1}
+
 NIMBUS_VALIDATORS=${NIMBUS_VALIDATORS:-32}
 LIGHTHOUSE_VALIDATORS=${LIGHTHOUSE_VALIDATORS:-32}
 PRYSM_VALIDATORS=${PRYSM_VALIDATORS:-32}
@@ -20,6 +24,7 @@ VALIDATOR_OFFSET=0
 
 # Nimbus
 
+for ((c=0; c<$NIMBUS_NODES; c++)) do
 $GO_PATH/bin/eth2-val-tools deposit-data \
 --source-min=$VALIDATOR_OFFSET \
 --source-max=$(($VALIDATOR_OFFSET + $NIMBUS_VALIDATORS)) \
@@ -31,7 +36,7 @@ $GO_PATH/bin/eth2-val-tools deposit-data \
 $GO_PATH/bin/eth2-val-tools assign \
   --assignments="/root/multinet/repo/deposits/assignments.json" \
   --hostname="multinet" \
-  --out-loc="/root/multinet/repo/deposits/nimbus" \
+  --out-loc="/root/multinet/repo/deposits/nimbus-$c" \
   --source-mnemonic="$VALIDATORS_MNEMONIC" \
   --source-min=0 \
   --source-max=32 \
@@ -40,12 +45,14 @@ $GO_PATH/bin/eth2-val-tools assign \
   --key-man-loc="/root/multinet/repo/deposits/wallets" \
   --wallet-name="multinet-wallet"
 
-mv /root/multinet/repo/deposits/nimbus/nimbus-keys /root/multinet/repo/deposits/nimbus/validators
+mv /root/multinet/repo/deposits/nimbus-$c/nimbus-keys /root/multinet/repo/deposits/nimbus-$c/validators
 
 VALIDATOR_OFFSET=$(($VALIDATOR_OFFSET + $NIMBUS_VALIDATORS))
+done
 
 # LH
 
+for ((c=0; c<$LIGHTHOUSE_NODES; c++)) do
 $GO_PATH/bin/eth2-val-tools deposit-data \
 --source-min=$VALIDATOR_OFFSET \
 --source-max=$(($VALIDATOR_OFFSET + $LIGHTHOUSE_VALIDATORS)) \
@@ -57,7 +64,7 @@ $GO_PATH/bin/eth2-val-tools deposit-data \
 $GO_PATH/bin/eth2-val-tools assign \
   --assignments="/root/multinet/repo/deposits/assignments.json" \
   --hostname="multinet" \
-  --out-loc="/root/multinet/repo/deposits/lighthouse" \
+  --out-loc="/root/multinet/repo/deposits/lighthouse-$c" \
   --source-mnemonic="$VALIDATORS_MNEMONIC" \
   --source-min=32 \
   --source-max=64 \
@@ -67,9 +74,11 @@ $GO_PATH/bin/eth2-val-tools assign \
   --wallet-name="multinet-wallet"
 
 VALIDATOR_OFFSET=$(($VALIDATOR_OFFSET + $LIGHTHOUSE_VALIDATORS))
+done
 
 # Prysm
 
+for ((c=0; c<$PRYSM_NODES; c++)) do
 $GO_PATH/bin/eth2-val-tools deposit-data \
 --source-min=$VALIDATOR_OFFSET \
 --source-max=$(($VALIDATOR_OFFSET + $PRYSM_VALIDATORS)) \
@@ -81,7 +90,7 @@ $GO_PATH/bin/eth2-val-tools deposit-data \
 $GO_PATH/bin/eth2-val-tools assign \
   --assignments="/root/multinet/repo/deposits/assignments.json" \
   --hostname="multinet" \
-  --out-loc="/root/multinet/repo/deposits/prysm" \
+  --out-loc="/root/multinet/repo/deposits/prysm-$c" \
   --source-mnemonic="$VALIDATORS_MNEMONIC" \
   --source-min=64 \
   --source-max=96 \
@@ -91,6 +100,7 @@ $GO_PATH/bin/eth2-val-tools assign \
   --wallet-name="multinet-wallet"
 
 VALIDATOR_OFFSET=$(($VALIDATOR_OFFSET + $PRYSM_VALIDATORS))
+done
 
 echo "Total validators $VALIDATOR_OFFSET."
 
@@ -134,8 +144,6 @@ cd "${SRCDIR}"
 
 # Setup Nimbus build system environment variables
 source env.sh
-
-build_once "nimbus_submodules" make update
 
 PRESET_FILE="${SIM_ROOT}/${SPEC_VERSION}.yaml"
 DEPOSITS_GENERATOR="${BUILD_DIR}/deposit_maker"

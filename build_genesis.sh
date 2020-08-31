@@ -33,15 +33,12 @@ cd "${SRCDIR}"
 # Setup Nimbus build system environment variables
 source env.sh
 
-build_once "nimbus_submodules" make update
+make update
 
 PRESET_FILE="${SIM_ROOT}/${SPEC_VERSION}.yaml"
 DEPOSITS_GENERATOR="${BUILD_DIR}/deposit_maker"
 
 # Build Nimbus
-build_once "nimbus_beacon_node" \
-  ./env.sh nim c -o:"$NIMBUS_BIN" $NIMFLAGS beacon_chain/beacon_node
+./env.sh nim c -o:"$NIMBUS_BIN" $NIMFLAGS beacon_chain/beacon_node
 
-build_once "nimbus_deposit_maker" \
-  ./env.sh nim c -o:"$DEPOSITS_GENERATOR" $NIMFLAGS beacon_chain/deposit_contract
-
+./env.sh nim c -o:"$DEPOSITS_GENERATOR" $NIMFLAGS beacon_chain/deposit_contract

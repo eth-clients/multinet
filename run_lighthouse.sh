@@ -9,6 +9,11 @@ cd "$(dirname "$0")"
 source vars.sh
 
 LH_DATADIR="/root/multinet/repo/deposits/lighthouse"
+# k8s check
+if [ "$MULTINET_POD_NAME" != "" ] then
+  LH_DATADIR="/root/multinet/repo/deposits/$MULTINET_POD_NAME"
+fi
+
 NBC_DATADIR="/root/multinet/repo/deposits/nimbus"
 LH_VALIDATORS_DIR=$LH_DATADIR/keys
 LH_SECRETS_DIR=$LH_DATADIR/secrets

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: lighthouse
+  labels:
+    app: multinet
+    tier: lighthouse
+spec:
+  replicas: {{ .Values.LIGHTHOUSE_NODES }}
+  selector:
+    matchLabels:
+      tier: lighthouse
+  template:
+    metadata:
+      generateName: lighthouse-
+      labels:
+        tier: lighthouse
+    spec:
+      containers:
+        - name: lighthouse
+          imagePullPolicy: Never # sideloaded images, e.g. `kind load docker-image multinet-lighthouse --name kind`
+          image: multinet-lighthouse
+          command: [ "bash", "-c"]
+          args:
+          - ./wait_for.sh -t 0 nimbus:50000 -- ./run_lighthouse.sh
+          # inject environment variables
+          env:
+            - name: MULTINET_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MULTINET_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP

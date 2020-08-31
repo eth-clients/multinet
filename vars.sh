@@ -8,10 +8,10 @@ cd $(dirname $0)
 
 SIM_ROOT="$($PWD_CMD)"
 
-# Set a default value for the env vars usually supplied by a Makefile
-cd $(git rev-parse --show-toplevel)
-: ${GIT_ROOT:="$($PWD_CMD)"}
-cd - &>/dev/null
+# # Set a default value for the env vars usually supplied by a Makefile
+# cd $(git rev-parse --show-toplevel)
+# : ${GIT_ROOT:="$($PWD_CMD)"}
+# cd - &>/dev/null
 
 SPEC_VERSION=mainnet
 

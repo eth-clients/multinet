@@ -42,6 +42,4 @@ cd "${NIMBUS_DIR}"
 # Setup Nimbus build system environment variables
 source env.sh
 
-build_once "nimbus_submodules" make update
-build_once "nimbus_beacon_node" \
-  ./env.sh nim c -o:"$NIMBUS_BIN" $NIMFLAGS beacon_chain/beacon_node
+./env.sh nim c -o:"$NIMBUS_BIN" $NIMFLAGS beacon_chain/beacon_node

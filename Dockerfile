@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 as tools
+FROM ubuntu:20.04 as multinet-tools
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt -y update
@@ -44,13 +44,13 @@ GO111MODULE=on go get github.com/wealdtech/ethereal
 
 WORKDIR /root/multinet
 
-COPY ./.git /root/multinet/repo/.git
+# COPY ./.git /root/multinet/repo/.git
 COPY ./vars.sh /root/multinet/repo
 COPY ./mainnet.yaml /root/multinet/repo
 
 WORKDIR /root/multinet/repo
 
-FROM tools as nimbus
+FROM multinet-tools as multinet-nimbus
 
 COPY ./build_genesis.sh /root/multinet/repo
 RUN ["/bin/bash", "build_genesis.sh"]
@@ -66,7 +66,7 @@ RUN chmod +x /root/multinet/repo/make_genesis.sh
 
 COPY ./wait_for.sh /root/multinet/repo
 
-FROM tools as lighthouse
+FROM multinet-tools as multinet-lighthouse
 
 COPY ./build_lighthouse.sh /root/multinet/repo
 RUN ["/bin/bash", "build_lighthouse.sh"]
@@ -74,7 +74,7 @@ COPY ./run_lighthouse.sh /root/multinet/repo
 
 COPY ./wait_for.sh /root/multinet/repo
 
-FROM tools as prysm
+FROM multinet-tools as multinet-prysm
 
 COPY ./build_prysm.sh /root/multinet/repo
 RUN ["/bin/bash", "build_prysm.sh"]
