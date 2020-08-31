@@ -19,3 +19,7 @@ Using this trick you could even attach via visual studio code and SSH integratio
 # License
 
 CC0 (Creative Common Zero)
+
+# Known issues
+
+For some reason (due to the `build.rs` in `deposit_contract` project) lighthouse will need to build again (we built already in the Dockerfile...) the first time `docker-compose up` will run.

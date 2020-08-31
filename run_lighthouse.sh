@@ -2,6 +2,8 @@
 
 set -eu
 
+export RUST_LOG=trace,libp2p=trace,multistream=trace,gossipsub=trace
+
 # Read in variables
 cd "$(dirname "$0")"
 source vars.sh
@@ -39,12 +41,12 @@ fi
 
 set -x # print commands
 
+cargo build --release --bin lighthouse
+
 # beacon node
-# TODO not sure if the RUST_LOG and the --debug-level options do the same thing...
-#RUST_LOG=debug \
-cargo run --release --bin lighthouse -- \
-	--debug-level debug \
+target/release/lighthouse \
   bn \
+	--debug-level debug \
 	--datadir $LH_DATADIR \
   --testnet-dir $TESTNET_DIR \
   --dummy-eth1 \
@@ -55,17 +57,16 @@ cargo run --release --bin lighthouse -- \
   --http \
   $BOOTNODES_ARG 2>&1 | tee "$SIM_ROOT/lighthouse-node.log" &
 
-# wait_and_register_enr "$LH_DATADIR/beacon/network/enr.dat"
-
 # validator client
-cargo run --release --bin lighthouse -- \
-	--debug-level debug \
+target/release/lighthouse \
   vc \
+	--debug-level debug \
   --spec $SPEC_VERSION \
 	--datadir $LH_VALIDATORS_DIR \
 	--secrets-dir $LH_SECRETS_DIR \
 	--testnet-dir $TESTNET_DIR \
 	--auto-register \
   --allow-unsynced 2>&1 | tee "$SIM_ROOT/lighthouse-vc.log"
+
 set +x
 

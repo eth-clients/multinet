@@ -43,7 +43,7 @@ services:
       target: prysm
     volumes: 
       # editable source here
-      - lighthouse-source:/root/multinet/repo/lighthouse
+      - prysm-source:/root/multinet/repo/prysm
       - multinet-deposits:/root/multinet/repo/deposits
       - multinet-data:/root/multinet/repo/data
     command: bash -c "./wait_for.sh -t 0 nimbus:50000 -- ./run_prysm.sh"
@@ -53,6 +53,7 @@ volumes:
   multinet-deposits:
   nimbus-source:
   lighthouse-source:
+  prysm-source:
 
 networks:
   mesh:
