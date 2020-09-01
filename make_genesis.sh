@@ -148,6 +148,11 @@ source env.sh
 PRESET_FILE="${SIM_ROOT}/${SPEC_VERSION}.yaml"
 DEPOSITS_GENERATOR="${BUILD_DIR}/deposit_maker"
 
+IP_ADDRESS=172.20.0.10
+if [ "$MULTINET_POD_IP" != "" ]; then
+  IP_ADDRESS=$MULTINET_POD_IP;
+fi
+
 # Generate genesis file
 $NIMBUS_BIN \
   --data-dir="${DATA_DIR}/nimbus" \
@@ -156,7 +161,7 @@ $NIMBUS_BIN \
   --total-validators=$NUM_VALIDATORS \
   --output-genesis="${TESTNET_DIR}/genesis.ssz" \
   --output-bootstrap-file="${TESTNET_DIR}/bootstrap_nodes.txt" \
-  --bootstrap-address=172.20.0.10 \
+  --bootstrap-address=$IP_ADDRESS \
   --bootstrap-port=50000 \
   --genesis-offset=30 # Delay in seconds
 

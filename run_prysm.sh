@@ -1,15 +1,17 @@
 #!/bin/bash
 
+echo "Running prysm"
+
 set -eu
 
 source vars.sh
 
-NBC_DATADIR="/root/multinet/repo/deposits/nimbus"
+NBC_DATADIR="/root/multinet/repo/deposits/nimbus-0"
 
-PRY_DATADIR="/root/multinet/repo/deposits/prysm"
+PRY_DATADIR="/root/multinet/repo/deposits/prysm-0"
 # k8s check
-if [ "$MULTINET_POD_NAME" != "" ] then
-  PRY_DATADIR="/root/multinet/repo/deposits/$MULTINET_POD_NAME"
+if [ "$MULTINET_POD_NAME" != "" ]; then
+  PRY_DATADIR="/root/multinet/repo/deposits/$MULTINET_POD_NAME";
 fi
 
 VALIDATORS_START=${1:-0}

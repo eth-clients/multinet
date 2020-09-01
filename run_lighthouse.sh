@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Running lighthouse"
+
 set -eu
 
 export RUST_LOG=trace,libp2p=trace,multistream=trace,gossipsub=trace
@@ -8,13 +10,10 @@ export RUST_LOG=trace,libp2p=trace,multistream=trace,gossipsub=trace
 cd "$(dirname "$0")"
 source vars.sh
 
-LH_DATADIR="/root/multinet/repo/deposits/lighthouse"
-# k8s check
-if [ "$MULTINET_POD_NAME" != "" ] then
-  LH_DATADIR="/root/multinet/repo/deposits/$MULTINET_POD_NAME"
-fi
+MULTINET_POD_NAME=${MULTINET_POD_NAME:-lighthouse-0}
+LH_DATADIR="/root/multinet/repo/deposits/$MULTINET_POD_NAME"
 
-NBC_DATADIR="/root/multinet/repo/deposits/nimbus"
+NBC_DATADIR="/root/multinet/repo/deposits/nimbus-0"
 LH_VALIDATORS_DIR=$LH_DATADIR/keys
 LH_SECRETS_DIR=$LH_DATADIR/secrets
 
@@ -46,8 +45,6 @@ fi
 
 set -x # print commands
 
-cargo build --release --bin lighthouse
-
 # beacon node
 target/release/lighthouse \
   bn \
@@ -57,10 +54,10 @@ target/release/lighthouse \
   --dummy-eth1 \
   --spec $SPEC_VERSION \
   --port 50001 \
-  --enr-address lighthouse \
+  --enr-address $MULTINET_POD_NAME \
   --enr-udp-port 50001 \
   --http \
-  $BOOTNODES_ARG 2>&1 | tee "$SIM_ROOT/lighthouse-node.log" &
+  $BOOTNODES_ARG &
 
 # validator client
 target/release/lighthouse \
@@ -71,7 +68,7 @@ target/release/lighthouse \
 	--secrets-dir $LH_SECRETS_DIR \
 	--testnet-dir $TESTNET_DIR \
 	--auto-register \
-  --allow-unsynced 2>&1 | tee "$SIM_ROOT/lighthouse-vc.log"
+  --allow-unsynced
 
 set +x
 

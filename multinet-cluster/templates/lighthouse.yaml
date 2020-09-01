@@ -16,13 +16,25 @@ spec:
       labels:
         tier: lighthouse
     spec:
+      volumes:
+        - name: deposits
+          persistentVolumeClaim:
+            claimName: deposits-storage
+        - name: common-data
+          persistentVolumeClaim:
+            claimName: common-data
       containers:
         - name: lighthouse
           imagePullPolicy: Never # sideloaded images, e.g. `kind load docker-image multinet-lighthouse --name kind`
           image: multinet-lighthouse
+          volumeMounts:
+          - mountPath: /root/multinet/repo/deposits
+            name: deposits
+          - mountPath: /root/multinet/repo/data
+            name: common-data
           command: [ "bash", "-c"]
           args:
-          - ./wait_for.sh -t 0 nimbus:50000 -- ./run_lighthouse.sh
+          - ./wait_for.sh -t 0 bootstrap:50000 -- ./run_lighthouse.sh
           # inject environment variables
           env:
             - name: MULTINET_POD_NAME
@@ -33,3 +45,4 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+      

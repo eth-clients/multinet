@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Running nimbus"
+
 set -eo pipefail
 
 source "$(dirname "$0")/vars.sh"
@@ -7,10 +9,10 @@ source "$(dirname "$0")/vars.sh"
 # Nimbus path
 NIMBUS_DIR=${NIMBUS_PATH:-"nim-beacon-chain"}
 
-NIMBUS_DATA_DIR="/root/multinet/repo/deposits/nimbus"
+NIMBUS_DATA_DIR="/root/multinet/repo/deposits/nimbus-0"
 # k8s check
-if [ "$MULTINET_POD_NAME" != "" ] then
-  NIMBUS_DATA_DIR="/root/multinet/repo/deposits/$MULTINET_POD_NAME"
+if [ "$MULTINET_POD_NAME" != "" ]; then
+  NIMBUS_DATA_DIR="/root/multinet/repo/deposits/$MULTINET_POD_NAME";
 fi
 
 # Switching to Nimbus folder
@@ -24,6 +26,9 @@ source env.sh
 PORT=$(printf '5%04d' 0)
 
 NAT_FLAG="--nat:extip:172.20.0.10"
+if [ "$MULTINET_POD_IP" != "" ]; then
+  NAT_FLAG="--nat:extip:$MULTINET_POD_IP";
+fi
 
 rm -rf "$NIMBUS_DATA_DIR/db"
 rm -f "$NIMBUS_DATA_DIR/beacon_node.enr"

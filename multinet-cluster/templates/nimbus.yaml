@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nimbus
+  labels:
+    app: multinet
+    tier: nimbus
+spec:
+  replicas: {{ .Values.NIMBUS_NODES }}
+  selector:
+    matchLabels:
+      tier: nimbus
+  template:
+    metadata:
+      generateName: nimbus-
+      labels:
+        tier: nimbus
+    spec:
+      volumes:
+        - name: deposits
+          persistentVolumeClaim:
+            claimName: deposits-storage
+        - name: common-data
+          persistentVolumeClaim:
+            claimName: common-data
+      containers:
+        - name: nimbus
+          imagePullPolicy: Never # sideloaded images, e.g. `kind load docker-image multinet-nimbus --name kind`
+          image: multinet-nimbus
+          volumeMounts:
+          - mountPath: /root/multinet/repo/deposits
+            name: deposits
+          - mountPath: /root/multinet/repo/data
+            name: common-data
+          ports:
+          - containerPort: 50000
+          command: [ "bash", "-c"]
+          args:
+          # If we are 0 just run, we bootstrap
+          - if [[ $MULTINET_POD_NAME != "nimbus-0" ]]; then ./wait_for.sh -t 0 bootstrap:50000 -- ./run_nimbus.sh; else ./run_nimbus.sh; fi
+          # inject environment variables
+          env:
+            - name: MULTINET_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MULTINET_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: LOG_LEVEL
+              value: "{{ .Values.NIMBUS_LOG_LEVEL }}"
+      initContainers:
+        - name: genesis
+          imagePullPolicy: Never # sideloaded images, e.g. `kind load docker-image multinet-nimbus --name kind`
+          image: multinet-nimbus
+          volumeMounts:
+          - mountPath: /root/multinet/repo/deposits
+            name: deposits
+          - mountPath: /root/multinet/repo/data
+            name: common-data
+          command: [ "bash", "-c"]
+          args:
+          - if [[ $MULTINET_POD_NAME == "nimbus-0" ]]; then ./make_genesis.sh; else ./wait_for.sh -t 0 bootstrap:50000 -- echo "Done"; fi
+          # inject environment variables
+          env:
+            # We use this to dedect with are 0, and run only on 0 node
+            - name: MULTINET_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            # inject environment variables
+          env:
+            - name: MULTINET_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MULTINET_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            # Genesis parameters
+            - name: NIMBUS_NODES
+              value: "{{ .Values.NIMBUS_NODES }}"
+            - name: NIMBUS_VALIDATORS
+              value: "{{ .Values.NIMBUS_VALIDATORS }}"
+            - name: LIGHTHOUSE_NODES
+              value: "{{ .Values.LIGHTHOUSE_NODES }}"
+            - name: LIGHTHOUSE_VALIDATORS
+              value: "{{ .Values.LIGHTHOUSE_VALIDATORS }}"
+            - name: PRYSM_NODES
+              value: "{{ .Values.PRYSM_NODES }}"
+            - name: PRYSM_VALIDATORS
+              value: "{{ .Values.PRYSM_VALIDATORS }}"
