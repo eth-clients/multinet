@@ -37,6 +37,40 @@ docker build --target multinet-prysm -t multinet-prysm .
 
 ### Spin cluster with helm
 
+#### If you need a kubernetes local cluster use kind 
+
+https://kind.sigs.k8s.io/docs/user/quick-start/
+
+```
+GO111MODULE="on" go get sigs.k8s.io/kind@v0.8.1
+kind create cluster
+```
+
+#### Setup helm
+
+```
+kubectl create serviceaccount --namespace kube-system tiller
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+helm init --service-account tiller
+```
+
+## Load images (only if you use *kind*)
+
+```
+docker build --target multinet-nimbus -t multinet-nimbus .
+kind load docker-image multinet-nimbus --name kind
+
+docker build --target multinet-lighthouse -t multinet-lighthouse .
+kind load docker-image multinet-lighthouse --name kind
+
+docker build --target multinet-prysm -t multinet-prysm .
+kind load docker-image multinet-prysm --name kind
+```
+
+#### Finally start the cluster
+
+*Edit multinet-cluster/values.yaml*
+
 ```
 helm install ./multinet-cluster  
 ```
