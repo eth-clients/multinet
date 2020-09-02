@@ -27,14 +27,6 @@ For some reason (due to the `build.rs` in `deposit_contract` project) lighthouse
 
 ## Kubernetes
 
-### Setup images
-
-```
-docker build --target multinet-nimbus -t multinet-nimbus .
-docker build --target multinet-lighthouse -t multinet-lighthouse .
-docker build --target multinet-prysm -t multinet-prysm .
-```
-
 ### Spin cluster with helm
 
 #### If you need a kubernetes local cluster use kind 
@@ -54,7 +46,7 @@ kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admi
 helm init --service-account tiller
 ```
 
-## Load images (only if you use *kind*)
+#### Load images (only if you use *kind*)
 
 ```
 docker build --target multinet-nimbus -t multinet-nimbus .
