@@ -9,11 +9,8 @@ source "$(dirname "$0")/vars.sh"
 # Nimbus path
 NIMBUS_DIR=${NIMBUS_PATH:-"nim-beacon-chain"}
 
-NIMBUS_DATA_DIR="/root/multinet/repo/deposits/nimbus-0"
-# k8s check
-if [ "$MULTINET_POD_NAME" != "" ]; then
-  NIMBUS_DATA_DIR="/root/multinet/repo/deposits/$MULTINET_POD_NAME";
-fi
+MULTINET_POD_NAME=${MULTINET_POD_NAME:-nimbus-0}
+NIMBUS_DATA_DIR="/root/multinet/repo/deposits/$MULTINET_POD_NAME"
 
 # Switching to Nimbus folder
 cd "${NIMBUS_DIR}"

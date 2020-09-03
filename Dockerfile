@@ -44,41 +44,40 @@ GO111MODULE=on go get github.com/wealdtech/ethereal
 
 WORKDIR /root/multinet
 
-# COPY ./.git /root/multinet/repo/.git
-COPY ./vars.sh /root/multinet/repo
-COPY ./mainnet.yaml /root/multinet/repo
-COPY ./minimal.yaml /root/multinet/repo
+COPY ./scripts/vars.sh /root/multinet/repo
+COPY ./scripts/mainnet.yaml /root/multinet/repo
+COPY ./scripts/minimal.yaml /root/multinet/repo
 
 WORKDIR /root/multinet/repo
 
 FROM multinet-tools as multinet-nimbus
 
-COPY ./build_genesis.sh /root/multinet/repo
+COPY ./scripts/build_genesis.sh /root/multinet/repo
 RUN ["/bin/bash", "build_genesis.sh"]
 
-COPY ./build_nimbus.sh /root/multinet/repo
+COPY ./scripts/build_nimbus.sh /root/multinet/repo
 RUN ["/bin/bash", "build_nimbus.sh"]
 
-COPY ./run_nimbus.sh /root/multinet/repo
+COPY ./scripts/run_nimbus.sh /root/multinet/repo
 RUN chmod +x /root/multinet/repo/run_nimbus.sh
 
-COPY ./make_genesis.sh /root/multinet/repo
+COPY ./scripts/make_genesis.sh /root/multinet/repo
 RUN chmod +x /root/multinet/repo/make_genesis.sh
 
-COPY ./wait_for.sh /root/multinet/repo
+COPY ./scripts/wait_for.sh /root/multinet/repo
 
 FROM multinet-tools as multinet-lighthouse
 
-COPY ./build_lighthouse.sh /root/multinet/repo
+COPY ./scripts/build_lighthouse.sh /root/multinet/repo
 RUN ["/bin/bash", "build_lighthouse.sh"]
-COPY ./run_lighthouse.sh /root/multinet/repo
+COPY ./scripts/run_lighthouse.sh /root/multinet/repo
 
-COPY ./wait_for.sh /root/multinet/repo
+COPY ./scripts/wait_for.sh /root/multinet/repo
 
 FROM multinet-tools as multinet-prysm
 
-COPY ./build_prysm.sh /root/multinet/repo
+COPY ./scripts/build_prysm.sh /root/multinet/repo
 RUN ["/bin/bash", "build_prysm.sh"]
-COPY ./run_prysm.sh /root/multinet/repo
+COPY ./scripts/run_prysm.sh /root/multinet/repo
 
-COPY ./wait_for.sh /root/multinet/repo
+COPY ./scripts/wait_for.sh /root/multinet/repo

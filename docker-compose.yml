@@ -2,10 +2,10 @@ version: '3.4'
 
 services:
   nimbus:
-    hostname: nimbus
+    hostname: nimbus-0
     build:
       context: ./
-      target: nimbus
+      target: multinet-nimbus
     networks:
       mesh:
         ipv4_address: 172.20.0.10
@@ -19,12 +19,12 @@ services:
     command: bash -c "./make_genesis.sh && ./run_nimbus.sh"
     
   lighthouse:
-    hostname: lighthouse
+    hostname: lighthouse-0
     networks:
       - mesh
     build:
       context: ./
-      target: lighthouse
+      target: multinet-lighthouse
     # environment: 
     #   - RUST_LOG=trace,libp2p=trace,multistream=trace,gossipsub=trace
     volumes: 
@@ -35,12 +35,12 @@ services:
     command: bash -c "./wait_for.sh -t 0 nimbus:50000 -- ./run_lighthouse.sh"
 
   prysm:
-    hostname: prysm
+    hostname: prysm-0
     networks:
       - mesh
     build:
       context: ./
-      target: prysm
+      target: multinet-prysm
     volumes: 
       # editable source here
       - prysm-source:/root/multinet/repo/prysm

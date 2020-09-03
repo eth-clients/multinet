@@ -5,6 +5,7 @@ Startup scripts for multiclient interop testnet. Currently only the scripts for 
 ## Running
 
 ```
+cd scripts
 docker-compose up
 ```
 
@@ -49,6 +50,8 @@ helm init --service-account tiller
 #### Load images (only if you use *kind*) *Optional*
 
 ```
+cd scripts
+
 docker build --target multinet-nimbus -t multinet-nimbus .
 kind load docker-image multinet-nimbus --name kind
 

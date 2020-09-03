@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -x
 set -eo pipefail
 
 # Nimbus path
@@ -14,8 +15,6 @@ cd "$SIM_ROOT"
 
 rm -rf "$DATA_DIR"
 mkdir -p "$DATA_DIR"
-
-mkdir -p "$VALIDATORS_DIR" $"SECRETS_DIR"
 
 # Cloning Nimbus if needed
 [[ -d "$SRCDIR" ]] || {
@@ -40,5 +39,4 @@ DEPOSITS_GENERATOR="${BUILD_DIR}/deposit_maker"
 
 # Build Nimbus
 ./env.sh nim c -o:"$NIMBUS_BIN" $NIMFLAGS beacon_chain/beacon_node
-
 ./env.sh nim c -o:"$DEPOSITS_GENERATOR" $NIMFLAGS beacon_chain/deposit_contract

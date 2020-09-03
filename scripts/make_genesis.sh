@@ -96,7 +96,7 @@ $GO_PATH/bin/eth2-val-tools assign \
   --source-max=$(($VALIDATOR_OFFSET + $PRYSM_VALIDATORS)) \
   --count=$PRYSM_VALIDATORS \
   --config-base-path="/root/multinet/repo/deposits" \
-  --key-man-loc="/root/multinet/repo/deposits/wallets" \
+  --key-man-loc="/root/multinet/repo/deposits/prysm-$c/prysm/wallets" \
   --wallet-name="multinet-wallet"
 
 VALIDATOR_OFFSET=$(($VALIDATOR_OFFSET + $PRYSM_VALIDATORS))
@@ -163,7 +163,7 @@ $NIMBUS_BIN \
   --output-bootstrap-file="${TESTNET_DIR}/bootstrap_nodes.txt" \
   --bootstrap-address=$IP_ADDRESS \
   --bootstrap-port=50000 \
-  --genesis-offset=30 # Delay in seconds
+  --genesis-offset=111 # Delay in seconds
 
 echo "Genesis is ready!"
 
