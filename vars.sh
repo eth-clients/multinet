@@ -13,7 +13,7 @@ SIM_ROOT="$($PWD_CMD)"
 # : ${GIT_ROOT:="$($PWD_CMD)"}
 # cd - &>/dev/null
 
-SPEC_VERSION=mainnet
+SPEC_VERSION=minimal
 
 NUM_VALIDATORS=${VALIDATORS:-64}
 NUM_NODES=${NODES:-1}

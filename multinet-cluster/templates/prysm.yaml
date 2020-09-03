@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: prysm
+  labels:
+    app: multinet
+    tier: prysm
+spec:
+  replicas: {{ .Values.PRYSM_NODES }}
+  selector:
+    matchLabels:
+      tier: prysm
+  template:
+    metadata:
+      generateName: prysm-
+      labels:
+        tier: prysm
+    spec:
+      volumes:
+        - name: deposits
+          persistentVolumeClaim:
+            claimName: deposits-storage
+        - name: common-data
+          persistentVolumeClaim:
+            claimName: common-data
+      containers:
+        - name: prysm
+          imagePullPolicy: Never # sideloaded images, e.g. `kind load docker-image multinet-prysm --name kind`
+          image: multinet-prysm
+          volumeMounts:
+          - mountPath: /root/multinet/repo/deposits
+            name: deposits
+          - mountPath: /root/multinet/repo/data
+            name: common-data
+          command: [ "bash", "-c"]
+          args:
+          - ./wait_for.sh -t 0 bootstrap:50000 -- ./run_prysm.sh
+          # inject environment variables
+          env:
+            - name: MULTINET_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MULTINET_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+      

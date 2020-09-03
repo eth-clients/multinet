@@ -59,6 +59,8 @@ target/release/lighthouse \
   --http \
   $BOOTNODES_ARG &
 
+sleep 5
+
 # validator client
 target/release/lighthouse \
   vc \
@@ -71,4 +73,3 @@ target/release/lighthouse \
   --allow-unsynced
 
 set +x
-

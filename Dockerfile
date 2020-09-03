@@ -47,6 +47,7 @@ WORKDIR /root/multinet
 # COPY ./.git /root/multinet/repo/.git
 COPY ./vars.sh /root/multinet/repo
 COPY ./mainnet.yaml /root/multinet/repo
+COPY ./minimal.yaml /root/multinet/repo
 
 WORKDIR /root/multinet/repo
 

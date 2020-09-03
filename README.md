@@ -16,11 +16,11 @@ docker run -it --rm -v nimbus-source:/tmp/nimbus ubuntu bash
 ```
 Using this trick you could even attach via visual studio code and SSH integration.
 
-# License
+## License
 
 CC0 (Creative Common Zero)
 
-# Known issues
+## Known issues
 
 For some reason (due to the `build.rs` in `deposit_contract` project) lighthouse will need to build again (we built already in the Dockerfile...) the first time `docker-compose up` will run.
 
@@ -29,7 +29,7 @@ For some reason (due to the `build.rs` in `deposit_contract` project) lighthouse
 
 ### Spin cluster with helm
 
-#### If you need a kubernetes local cluster use kind 
+#### If you need a kubernetes local cluster use kind *Optional*
 
 https://kind.sigs.k8s.io/docs/user/quick-start/
 
@@ -46,7 +46,7 @@ kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admi
 helm init --service-account tiller
 ```
 
-#### Load images (only if you use *kind*)
+#### Load images (only if you use *kind*) *Optional*
 
 ```
 docker build --target multinet-nimbus -t multinet-nimbus .
@@ -66,3 +66,8 @@ kind load docker-image multinet-prysm --name kind
 ```
 helm install ./multinet-cluster  
 ```
+
+### TODO
+
+- [ ] Integrate eth2stats
+- [ ] Mount source trees in order to edit source

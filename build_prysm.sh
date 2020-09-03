@@ -1,7 +1,8 @@
 #!/bin/bash
 
 set -eu
-trap 'kill -9 -- -$$' SIGINT EXIT SIGTERM
+
+source vars.sh
 
 VALIDATORS_START=${1:-0}
 VALIDATORS_NUM=${2:-64}
@@ -33,4 +34,4 @@ set -x
 
 cd "$SRCDIR"
 
-bazel build //beacon-chain && bazel build //validator
+bazel build //beacon-chain --define=ssz=$SPEC_VERSION && bazel build //validator --define=ssz=$SPEC_VERSION

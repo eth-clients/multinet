@@ -65,7 +65,7 @@ fi
 # needs a mock contract or will not like it
 # 0x0 did not work
 
-bazel run //beacon-chain -- \
+bazel run //beacon-chain --define=ssz=$SPEC_VERSION -- \
   $BOOTNODES_ARG \
   --force-clear-db \
   --datadir=/tmp/beacon-prysm \
@@ -77,7 +77,9 @@ bazel run //beacon-chain -- \
   --deposit-contract=0x8A04d14125D0FDCDc742F4A05C051De07232EDa4 \
   --interop-genesis-state=$TESTNET_DIR/genesis.ssz &
 
-bazel run //validator -- \
+sleep 5
+
+bazel run //validator --define=ssz=$SPEC_VERSION -- \
   --chain-config-file=$TESTNET_DIR/config.yaml \
   --disable-accounts-v2=true \
   --verbosity=debug \
