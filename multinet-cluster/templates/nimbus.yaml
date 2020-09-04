@@ -25,8 +25,8 @@ spec:
             claimName: common-data
       containers:
         - name: nimbus
-          imagePullPolicy: Never # sideloaded images, e.g. `kind load docker-image multinet-nimbus --name kind`
-          image: multinet-nimbus
+          image: eth2clients/multinet-nimbus
+          imagePullPolicy: IfNotPresent
           volumeMounts:
           - mountPath: /root/multinet/repo/deposits
             name: deposits

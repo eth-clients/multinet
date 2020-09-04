@@ -25,8 +25,8 @@ spec:
             claimName: common-data
       containers:
         - name: lighthouse
-          imagePullPolicy: Never # sideloaded images, e.g. `kind load docker-image multinet-lighthouse --name kind`
-          image: multinet-lighthouse
+          image: eth2clients/multinet-lighthouse
+          imagePullPolicy: IfNotPresent
           volumeMounts:
           - mountPath: /root/multinet/repo/deposits
             name: deposits
