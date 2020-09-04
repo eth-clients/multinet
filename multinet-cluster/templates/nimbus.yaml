@@ -52,8 +52,8 @@ spec:
               value: "{{ .Values.NIMBUS_LOG_LEVEL }}"
       initContainers:
         - name: genesis
-          imagePullPolicy: Never # sideloaded images, e.g. `kind load docker-image multinet-nimbus --name kind`
-          image: multinet-nimbus
+          image: eth2clients/multinet-nimbus
+          imagePullPolicy: IfNotPresent
           volumeMounts:
           - mountPath: /root/multinet/repo/deposits
             name: deposits
@@ -82,13 +82,19 @@ spec:
             # Genesis parameters
             - name: NIMBUS_NODES
               value: "{{ .Values.NIMBUS_NODES }}"
+            - name: NIMBUS_DEV_NODES
+              value: "{{ .Values.NIMBUS_DEV_NODES }}"
             - name: NIMBUS_VALIDATORS
               value: "{{ .Values.NIMBUS_VALIDATORS }}"
             - name: LIGHTHOUSE_NODES
               value: "{{ .Values.LIGHTHOUSE_NODES }}"
+            - name: LIGHTHOUSE_DEV_NODES
+              value: "{{ .Values.LIGHTHOUSE_DEV_NODES }}"
             - name: LIGHTHOUSE_VALIDATORS
               value: "{{ .Values.LIGHTHOUSE_VALIDATORS }}"
             - name: PRYSM_NODES
               value: "{{ .Values.PRYSM_NODES }}"
+            - name: PRYSM_DEV_NODES
+              value: "{{ .Values.PRYSM_DEV_NODES }}"
             - name: PRYSM_VALIDATORS
               value: "{{ .Values.PRYSM_VALIDATORS }}"

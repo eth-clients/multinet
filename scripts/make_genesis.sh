@@ -6,6 +6,10 @@ NIMBUS_NODES=${NIMBUS_NODES:-1}
 LIGHTHOUSE_NODES=${LIGHTHOUSE_NODES:-1}
 PRYSM_NODES=${PRYSM_NODES:-1}
 
+NIMBUS_DEV_NODES=${NIMBUS_DEV_NODES:-0}
+LIGHTHOUSE_DEV_NODES=${LIGHTHOUSE_DEV_NODES:-0}
+PRYSM_DEV_NODES=${PRYSM_DEV_NODES:-0}
+
 NIMBUS_VALIDATORS=${NIMBUS_VALIDATORS:-32}
 LIGHTHOUSE_VALIDATORS=${LIGHTHOUSE_VALIDATORS:-32}
 PRYSM_VALIDATORS=${PRYSM_VALIDATORS:-32}
@@ -50,6 +54,32 @@ mv /root/multinet/repo/deposits/nimbus-$c/nimbus-keys /root/multinet/repo/deposi
 VALIDATOR_OFFSET=$(($VALIDATOR_OFFSET + $NIMBUS_VALIDATORS))
 done
 
+for ((c=0; c<$NIMBUS_DEV_NODES; c++)) do
+$GO_PATH/bin/eth2-val-tools deposit-data \
+--source-min=$VALIDATOR_OFFSET \
+--source-max=$(($VALIDATOR_OFFSET + $NIMBUS_VALIDATORS)) \
+--amount="$DEPOSIT_AMOUNT" \
+--fork-version="$FORK_VERSION" \
+--withdrawals-mnemonic="$WITHDRAWALS_MNEMONIC" \
+--validators-mnemonic="$VALIDATORS_MNEMONIC" > /root/multinet/repo/deposits/assignments.json 2>&1
+
+$GO_PATH/bin/eth2-val-tools assign \
+  --assignments="/root/multinet/repo/deposits/assignments.json" \
+  --hostname="multinet" \
+  --out-loc="/root/multinet/repo/deposits/nimbus-dev-$c" \
+  --source-mnemonic="$VALIDATORS_MNEMONIC" \
+  --source-min=$VALIDATOR_OFFSET \
+  --source-max=$(($VALIDATOR_OFFSET + $NIMBUS_VALIDATORS)) \
+  --count=$NIMBUS_VALIDATORS \
+  --config-base-path="/root/multinet/repo/deposits" \
+  --key-man-loc="/root/multinet/repo/deposits/wallets" \
+  --wallet-name="multinet-wallet"
+
+mv /root/multinet/repo/deposits/nimbus-dev-$c/nimbus-keys /root/multinet/repo/deposits/nimbus-dev-$c/validators
+
+VALIDATOR_OFFSET=$(($VALIDATOR_OFFSET + $NIMBUS_VALIDATORS))
+done
+
 # LH
 
 for ((c=0; c<$LIGHTHOUSE_NODES; c++)) do
@@ -65,6 +95,30 @@ $GO_PATH/bin/eth2-val-tools assign \
   --assignments="/root/multinet/repo/deposits/assignments.json" \
   --hostname="multinet" \
   --out-loc="/root/multinet/repo/deposits/lighthouse-$c" \
+  --source-mnemonic="$VALIDATORS_MNEMONIC" \
+  --source-min=$VALIDATOR_OFFSET \
+  --source-max=$(($VALIDATOR_OFFSET + $LIGHTHOUSE_VALIDATORS)) \
+  --count=$LIGHTHOUSE_VALIDATORS \
+  --config-base-path="/root/multinet/repo/deposits" \
+  --key-man-loc="/root/multinet/repo/deposits/wallets" \
+  --wallet-name="multinet-wallet"
+
+VALIDATOR_OFFSET=$(($VALIDATOR_OFFSET + $LIGHTHOUSE_VALIDATORS))
+done
+
+for ((c=0; c<$LIGHTHOUSE_DEV_NODES; c++)) do
+$GO_PATH/bin/eth2-val-tools deposit-data \
+--source-min=$VALIDATOR_OFFSET \
+--source-max=$(($VALIDATOR_OFFSET + $LIGHTHOUSE_VALIDATORS)) \
+--amount="$DEPOSIT_AMOUNT" \
+--fork-version="$FORK_VERSION" \
+--withdrawals-mnemonic="$WITHDRAWALS_MNEMONIC" \
+--validators-mnemonic="$VALIDATORS_MNEMONIC" > /root/multinet/repo/deposits/assignments.json 2>&1
+
+$GO_PATH/bin/eth2-val-tools assign \
+  --assignments="/root/multinet/repo/deposits/assignments.json" \
+  --hostname="multinet" \
+  --out-loc="/root/multinet/repo/deposits/lighthouse-dev-$c" \
   --source-mnemonic="$VALIDATORS_MNEMONIC" \
   --source-min=$VALIDATOR_OFFSET \
   --source-max=$(($VALIDATOR_OFFSET + $LIGHTHOUSE_VALIDATORS)) \
@@ -97,6 +151,30 @@ $GO_PATH/bin/eth2-val-tools assign \
   --count=$PRYSM_VALIDATORS \
   --config-base-path="/root/multinet/repo/deposits" \
   --key-man-loc="/root/multinet/repo/deposits/prysm-$c/prysm/wallets" \
+  --wallet-name="multinet-wallet"
+
+VALIDATOR_OFFSET=$(($VALIDATOR_OFFSET + $PRYSM_VALIDATORS))
+done
+
+for ((c=0; c<$PRYSM_DEV_NODES; c++)) do
+$GO_PATH/bin/eth2-val-tools deposit-data \
+--source-min=$VALIDATOR_OFFSET \
+--source-max=$(($VALIDATOR_OFFSET + $PRYSM_VALIDATORS)) \
+--amount="$DEPOSIT_AMOUNT" \
+--fork-version="$FORK_VERSION" \
+--withdrawals-mnemonic="$WITHDRAWALS_MNEMONIC" \
+--validators-mnemonic="$VALIDATORS_MNEMONIC" > /root/multinet/repo/deposits/assignments.json 2>&1
+
+$GO_PATH/bin/eth2-val-tools assign \
+  --assignments="/root/multinet/repo/deposits/assignments.json" \
+  --hostname="multinet" \
+  --out-loc="/root/multinet/repo/deposits/prysm-dev-$c" \
+  --source-mnemonic="$VALIDATORS_MNEMONIC" \
+  --source-min=$VALIDATOR_OFFSET \
+  --source-max=$(($VALIDATOR_OFFSET + $PRYSM_VALIDATORS)) \
+  --count=$PRYSM_VALIDATORS \
+  --config-base-path="/root/multinet/repo/deposits" \
+  --key-man-loc="/root/multinet/repo/deposits/prysm-dev-$c/prysm/wallets" \
   --wallet-name="multinet-wallet"
 
 VALIDATOR_OFFSET=$(($VALIDATOR_OFFSET + $PRYSM_VALIDATORS))
