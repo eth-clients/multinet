@@ -66,3 +66,45 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         buildoptions: "--target multinet-prysm"
         tags: "latest"
+
+  eth2stats-server:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout
+    - uses: chainblocks/Publish-Docker-Github-Action@master
+      name: Build and upload to hub eth2stats-server
+      with:
+        name: eth2clients/eth2stats-server
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        context: eth2stats/eth2stats-server
+        tags: "latest"
+
+  eth2stats-client:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout
+    - uses: chainblocks/Publish-Docker-Github-Action@master
+      name: Build and upload to hub eth2stats-client
+      with:
+        name: eth2clients/eth2stats-client
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        context: eth2stats/eth2stats-client
+        tags: "latest"
+
+  eth2stats-dashboard:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout
+    - uses: chainblocks/Publish-Docker-Github-Action@master
+      name: Build and upload to hub eth2stats-dashboard
+      with:
+        name: eth2clients/eth2stats-dashboard
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        context: eth2stats/eth2stats-dashboard
+        tags: "latest"
