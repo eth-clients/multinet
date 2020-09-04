@@ -1,0 +1,9 @@
+[submodule "eth2stats/eth2stats-server"]
+	path = eth2stats/eth2stats-server
+	url = https://github.com/sinkingsugar/eth2stats-server.git
+[submodule "eth2stats/eth2stats-dashboard"]
+	path = eth2stats/eth2stats-dashboard
+	url = https://github.com/sinkingsugar/eth2stats-dashboard.git
+[submodule "eth2stats/eth2stats-client"]
+	path = eth2stats/eth2stats-client
+	url = https://github.com/sinkingsugar/eth2stats-client.git
