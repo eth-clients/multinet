@@ -73,4 +73,5 @@ helm install ./multinet-cluster
 ### TODO
 
 - [ ] Integrate eth2stats
-- [ ] Mount source trees in order to edit source
+- [ ] Allow external nodes in order to experiment
+- [ ] Deploy to github actions image building

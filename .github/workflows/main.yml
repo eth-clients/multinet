@@ -1,0 +1,63 @@
+name: CI
+
+on: [push]
+
+jobs:
+  multinet-tools:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout
+    - uses: chainblocks/Publish-Docker-Github-Action@master
+      name: Build and upload to hub  multinet-tools
+      with:
+        name: eth2clients/ multinet-tools
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        buildoptions: "--target  multinet-tools"
+        tags: "latest"
+  
+  multinet-nimbus:
+    needs: multinet-tools
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout
+    - uses: chainblocks/Publish-Docker-Github-Action@master
+      name: Build and upload to hub  multinet-nimbus
+      with:
+        name: eth2clients/ multinet-nimbus
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        buildoptions: "--target  multinet-nimbus"
+        tags: "latest"
+
+  multinet-lighthouse:
+    needs: multinet-tools
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout
+    - uses: chainblocks/Publish-Docker-Github-Action@master
+      name: Build and upload to hub  multinet-lighthouse
+      with:
+        name: eth2clients/ multinet-lighthouse
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        buildoptions: "--target  multinet-lighthouse"
+        tags: "latest"
+
+  multinet-prysm:
+    needs: multinet-tools
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout
+    - uses: chainblocks/Publish-Docker-Github-Action@master
+      name: Build and upload to hub  multinet-prysm
+      with:
+        name: eth2clients/ multinet-prysm
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        buildoptions: "--target  multinet-prysm"
+        tags: "latest"
