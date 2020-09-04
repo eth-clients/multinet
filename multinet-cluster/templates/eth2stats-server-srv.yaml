@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eth2stats
+spec:
+  selector:
+    app: eth2stats-server
+  ports:
+    - protocol: TCP
+      port: 8880
+      name: grpc
+    - protocol: TCP
+      port: 9990
+      name: api
