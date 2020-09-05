@@ -50,6 +50,19 @@ spec:
                   fieldPath: status.podIP
             - name: LOG_LEVEL
               value: "{{ .Values.NIMBUS_LOG_LEVEL }}"
+        - name: eth2stats-client
+          image: eth2clients/eth2stats-client
+          imagePullPolicy: IfNotPresent
+          args: ["run", "--v", "--eth2stats.node-name", "$(MULTINET_POD_NAME)", "--eth2stats.addr", "eth2stats:9090", "--eth2stats.tls=false", "--beacon.type", "nimbus", "--beacon.addr", "http://$(MULTINET_POD_IP):7000"]
+          env:
+            - name: MULTINET_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MULTINET_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
       initContainers:
         - name: genesis
           image: eth2clients/multinet-nimbus

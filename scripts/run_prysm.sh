@@ -37,6 +37,8 @@ bazel run //beacon-chain --define=ssz=$SPEC_VERSION -- \
   --force-clear-db \
   --datadir=/tmp/beacon-prysm \
   --pprof \
+  --rpc-host=0.0.0.0 \
+  --rpc-port=4000 \
   --verbosity=debug \
   --interop-eth1data-votes \
   --chain-config-file=$TESTNET_DIR/config.yaml \

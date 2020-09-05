@@ -53,6 +53,8 @@ target/release/lighthouse \
   --testnet-dir $TESTNET_DIR \
   --dummy-eth1 \
   --spec $SPEC_VERSION \
+  --http-address "0.0.0.0" \
+  --http-port 5052 \
   --port 50001 \
   --enr-address $MULTINET_POD_NAME \
   --enr-udp-port 50001 \

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eth2stats-server-versions
+data:
+  payload: >
+    client-versions:
+      - namespace: eth2stats-client
+        version: v0.0.0+

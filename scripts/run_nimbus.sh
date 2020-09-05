@@ -48,6 +48,9 @@ $NIMBUS_BIN \
   --data-dir:$NIMBUS_DATA_DIR \
   --tcp-port:$PORT \
   --udp-port:$PORT \
+  --rpc \
+  --rpc-address="0.0.0.0" \
+  --rpc-port=7000 \
   $BOOTNODES_ARG $NAT_FLAG \
   --state-snapshot:$TESTNET_DIR/genesis.ssz \
   --metrics

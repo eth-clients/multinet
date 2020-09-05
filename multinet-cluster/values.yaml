@@ -15,7 +15,7 @@ LIGHTHOUSE_DEV_NODES: 0
 # point it to an already existing source tree or
 # you will find the oritinal source in the container you can copy also
 LIGHTHOUSE_SOURCE_PATH: /run/desktop/mnt/host/e/tmp/multinet/lh
-LIGHTHOUSE_DEV_NODES: 1
+LIGHTHOUSE_DEV_NODES: 0
 LIGHTHOUSE_VALIDATORS: 64
 
 PRYSM_NODES: 8
@@ -25,7 +25,7 @@ PRYSM_DEV_NODES: 0
 # point it to an already existing source tree or
 # you will find the oritinal source in the container you can copy also
 PRYSM_SOURCE_PATH: /run/desktop/mnt/host/e/tmp/multinet/pry
-PRYSM_DEV_NODES: 1
+PRYSM_DEV_NODES: 0
 PRYSM_VALIDATORS: 64
 
 # DEV_NODES should use the <client>-dev-N folders for deposits details

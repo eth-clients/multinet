@@ -23,7 +23,13 @@ spec:
         - mountPath: /config.yml
           name: cfgmap
           subPath: payload
+        - mountPath: /client-versions.yml
+          name: cfgmap2
+          subPath: payload
       volumes:
       - name: cfgmap
         configMap:
           name: eth2stats-server-cfg
+      - name: cfgmap2
+        configMap:
+          name: eth2stats-server-versions
