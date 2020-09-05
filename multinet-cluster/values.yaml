@@ -30,3 +30,8 @@ PRYSM_VALIDATORS: 64
 
 # DEV_NODES should use the <client>-dev-N folders for deposits details
 # see respective run_<client> scripts for usage
+
+ETH2STATS_DASHBOARD_HOST: localhost
+ETH2STATS_DASHBOARD_PORT: 30000
+ETH2STATS_SERVER_HOST: localhost
+ETH2STATS_SERVER_PORT: 30001

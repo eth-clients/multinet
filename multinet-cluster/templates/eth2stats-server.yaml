@@ -15,10 +15,10 @@ spec:
       - name: eth2stats-server
         image: eth2clients/eth2stats-server
         imagePullPolicy: IfNotPresent
-        args: ["run"]
+        args: ["run", "--vv"]
         ports:
-        - containerPort: 9990
-        - containerPort: 8880
+        - containerPort: 9090
+        - containerPort: 8080
         volumeMounts:
         - mountPath: /config.yml
           name: cfgmap

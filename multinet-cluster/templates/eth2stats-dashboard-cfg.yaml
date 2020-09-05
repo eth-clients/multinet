@@ -9,10 +9,10 @@ data:
             {
                 "name": "multinet cluster",
                 "path": "/cluster",
-                "joinURL": "http://eth2stats:8880/participate",
-                "HTTP_API": "http://eth2stats:8880/api",
-                "WS_API": "ws://eth2stats:8880/ws",
-                "SERVER_ADDR": "localhost:80"
+                "joinURL": "http://{{ .Values.ETH2STATS_SERVER_HOST }}:{{ .Values.ETH2STATS_SERVER_PORT }}/participate",
+                "HTTP_API": "http://{{ .Values.ETH2STATS_SERVER_HOST }}:{{ .Values.ETH2STATS_SERVER_PORT }}/api",
+                "WS_API": "ws://{{ .Values.ETH2STATS_SERVER_HOST }}:{{ .Values.ETH2STATS_SERVER_PORT }}/ws",
+                "SERVER_ADDR": "{{ .Values.ETH2STATS_DASHBOARD_HOST }}:{{ .Values.ETH2STATS_DASHBOARD_PORT }}"
             }
         ]
     }
