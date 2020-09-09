@@ -62,12 +62,6 @@ helm install ./multinet-cluster
 3. `nim c -o:beacon_node $NIMFLAGS beacon_chain/beacon_node`
 4. `./beacon_node --state-snapshot:/root/multinet/repo/data/testnet/genesis.ssz --bootstrap-file=/root/multinet/repo/data/testnet/bootstrap_nodes.txt`
 
-## TODO
-
-- [ ] Integrate eth2stats
-- [ ] Allow external nodes in order to experiment
-- [ ] Deploy to github actions image building
-
 # Running just 3 nodes with docker-compose
 
 ```
