@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eth2stats-dashboard-cfg
+data:
+  payload: >
+    {
+        "networks": [
+            {
+                "name": "multinet cluster",
+                "path": "/cluster",
+                "joinURL": "http://{{ .Values.ETH2STATS_SERVER_HOST }}:{{ .Values.ETH2STATS_SERVER_PORT }}/participate",
+                "HTTP_API": "http://{{ .Values.ETH2STATS_SERVER_HOST }}:{{ .Values.ETH2STATS_SERVER_PORT }}/api",
+                "WS_API": "ws://{{ .Values.ETH2STATS_SERVER_HOST }}:{{ .Values.ETH2STATS_SERVER_PORT }}/ws",
+                "SERVER_ADDR": "{{ .Values.ETH2STATS_DASHBOARD_HOST }}:{{ .Values.ETH2STATS_DASHBOARD_PORT }}"
+            }
+        ]
+    }

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eth2stats-server-cfg
+data:
+  payload: >
+    http:
+      # Enable/disable development CORS
+      dev-cors: true
+      # Allowed hosts for HTTP API development CORS
+      dev-cors-host: "*"
+    # Control what to be logged using format "module=level,module=level"; `*` means all other modules
+    logging: "*=trace"
+    network:
+      name: "multinet cluster testnet"
+      genesis-time: "2020-01-10T00:00:00Z"

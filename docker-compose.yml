@@ -1,0 +1,62 @@
+version: '3.4'
+
+services:
+  nimbus:
+    hostname: nimbus-0
+    build:
+      context: ./
+      target: multinet-nimbus
+    networks:
+      mesh:
+        ipv4_address: 172.20.0.10
+    environment: 
+      LOG_LEVEL: "INFO;TRACE:switch"
+    volumes: 
+      # editable source here
+      - nimbus-source:/root/multinet/repo/nim-beacon-chain
+      - multinet-deposits:/root/multinet/repo/deposits
+      - multinet-data:/root/multinet/repo/data
+    command: bash -c "./make_genesis.sh && ./run_nimbus.sh"
+    
+  lighthouse:
+    hostname: lighthouse-0
+    networks:
+      - mesh
+    build:
+      context: ./
+      target: multinet-lighthouse
+    # environment: 
+    #   - RUST_LOG=trace,libp2p=trace,multistream=trace,gossipsub=trace
+    volumes: 
+      # editable source here
+      - lighthouse-source:/root/multinet/repo/lighthouse
+      - multinet-deposits:/root/multinet/repo/deposits
+      - multinet-data:/root/multinet/repo/data
+    command: bash -c "./wait_for.sh -t 0 nimbus:50000 -- ./run_lighthouse.sh"
+
+  prysm:
+    hostname: prysm-0
+    networks:
+      - mesh
+    build:
+      context: ./
+      target: multinet-prysm
+    volumes: 
+      # editable source here
+      - prysm-source:/root/multinet/repo/prysm
+      - multinet-deposits:/root/multinet/repo/deposits
+      - multinet-data:/root/multinet/repo/data
+    command: bash -c "./wait_for.sh -t 0 nimbus:50000 -- ./run_prysm.sh"
+
+volumes: 
+  multinet-data:
+  multinet-deposits:
+  nimbus-source:
+  lighthouse-source:
+  prysm-source:
+
+networks:
+  mesh:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24

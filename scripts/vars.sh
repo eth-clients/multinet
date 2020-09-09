@@ -8,10 +8,10 @@ cd $(dirname $0)
 
 SIM_ROOT="$($PWD_CMD)"
 
-# Set a default value for the env vars usually supplied by a Makefile
-cd $(git rev-parse --show-toplevel)
-: ${GIT_ROOT:="$($PWD_CMD)"}
-cd - &>/dev/null
+# # Set a default value for the env vars usually supplied by a Makefile
+# cd $(git rev-parse --show-toplevel)
+# : ${GIT_ROOT:="$($PWD_CMD)"}
+# cd - &>/dev/null
 
 SPEC_VERSION=mainnet
 
@@ -45,18 +45,25 @@ wait_file () {
   MSG_DISPLAYED=0
   while [ ! -f "$1" ]; do
     if (( MSG_DISPLAYED == 0 )); then
-      echo Waiting for $1 to appear...
+      echo "Waiting for $1 to appear..."
       MSG_DISPLAYED=1
     fi
     sleep 0.1
   done
+  echo "Waiting for $1 ended."
 }
 
 wait_and_register_enr () {
+  echo "Registering ENR"
   wait_file "$1"
-  # Add a new line just in case
-  echo >> $TESTNET_DIR/bootstrap_nodes.txt
+  # # Add a new line just in case
+  # echo >> $TESTNET_DIR/bootstrap_nodes.txt
   cat "$1" >> $TESTNET_DIR/bootstrap_nodes.txt
+}
+
+wait_enr () {
+  echo "Waiting ENR"
+  wait_file "$1"
 }
 
 build_once () {

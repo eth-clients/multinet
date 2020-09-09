@@ -1,0 +1,27 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: eth2stats-dashboard
+spec:
+  selector:
+    matchLabels:
+      app: eth2stats-dashboard
+  template:
+    metadata:
+      labels:
+        app: eth2stats-dashboard
+    spec:
+      containers:
+      - name: eth2stats-dashboard
+        image: eth2clients/eth2stats-dashboard
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html/config/config.json
+          name: cfgmap
+          subPath: payload
+      volumes:
+      - name: cfgmap
+        configMap:
+          name: eth2stats-dashboard-cfg

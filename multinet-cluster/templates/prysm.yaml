@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: prysm
+  labels:
+    app: multinet
+    tier: prysm
+spec:
+  replicas: {{ .Values.PRYSM_NODES }}
+  selector:
+    matchLabels:
+      tier: prysm
+  template:
+    metadata:
+      generateName: prysm-
+      labels:
+        tier: prysm
+    spec:
+      volumes:
+        - name: deposits
+          persistentVolumeClaim:
+            claimName: deposits-storage
+        - name: common-data
+          persistentVolumeClaim:
+            claimName: common-data
+      containers:
+        - name: prysm
+          image: eth2clients/multinet-prysm
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - mountPath: /root/multinet/repo/deposits
+            name: deposits
+          - mountPath: /root/multinet/repo/data
+            name: common-data
+          command: [ "bash", "-c"]
+          ports:
+          - containerPort: 4000
+          args:
+          - ./wait_for.sh -t 0 bootstrap:50000 -- ./run_prysm.sh
+          # inject environment variables
+          env:
+            - name: MULTINET_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MULTINET_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+        - name: eth2stats-client
+          image: eth2clients/eth2stats-client
+          imagePullPolicy: IfNotPresent
+          args: ["run", "--v", "--eth2stats.node-name", "$(MULTINET_POD_NAME)", "--eth2stats.addr", "eth2stats:9090", "--eth2stats.tls=false", "--beacon.type", "prysm", "--beacon.addr", "$(MULTINET_POD_IP):4000"]
+          env:
+            - name: MULTINET_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MULTINET_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+      

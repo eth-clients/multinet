@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: prysm-dev
+  labels:
+    app: multinet
+    tier: prysm-dev
+spec:
+  replicas: {{ .Values.PRYSM_DEV_NODES }}
+  selector:
+    matchLabels:
+      tier: prysm-dev
+  template:
+    metadata:
+      generateName: prysm-dev-
+      labels:
+        tier: prysm-dev
+    spec:
+      volumes:
+        - name: deposits
+          persistentVolumeClaim:
+            claimName: deposits-storage
+        - name: common-data
+          persistentVolumeClaim:
+            claimName: common-data
+        - name: prysm-source
+          hostPath:
+            path: "{{ .Values.PRYSM_SOURCE_PATH }}"
+      containers:
+        - name: prysm-dev
+          image: eth2clients/multinet-prysm
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - mountPath: /root/multinet/repo/deposits
+            name: deposits
+          - mountPath: /root/multinet/repo/data
+            name: common-data
+          - mountPath: /root/multinet/repo/prysm-src
+            name: prysm-source
+          command: [ "bash", "-c"]
+          args:
+          # sleep forever, must attach manually to operate!
+          - tail -f /dev/null
+          # inject environment variables
+          env:
+            - name: MULTINET_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MULTINET_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP

@@ -1,0 +1,35 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: eth2stats-server
+spec:
+  selector:
+    matchLabels:
+      app: eth2stats-server
+  template:
+    metadata:
+      labels:
+        app: eth2stats-server
+    spec:
+      containers:
+      - name: eth2stats-server
+        image: eth2clients/eth2stats-server
+        imagePullPolicy: IfNotPresent
+        args: ["run", "--vv"]
+        ports:
+        - containerPort: 9090
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /config.yml
+          name: cfgmap
+          subPath: payload
+        - mountPath: /client-versions.yml
+          name: cfgmap2
+          subPath: payload
+      volumes:
+      - name: cfgmap
+        configMap:
+          name: eth2stats-server-cfg
+      - name: cfgmap2
+        configMap:
+          name: eth2stats-server-versions
