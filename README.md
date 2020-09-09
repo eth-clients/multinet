@@ -53,6 +53,7 @@ helm install ./multinet-cluster
 #### Nimbus basic example
 
 **`NIMBUS_DEV_NODES` must be more then 0 in `values.yaml`**
+**Also set the local persistent path `NIMBUS_SOURCE_PATH`**
 
 1. `kubectl exec --stdin --tty nimbus-dev-0 -- /bin/bash`
 2. `cd nimbus-src`
