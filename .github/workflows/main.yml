@@ -1,11 +1,10 @@
 name: CI
 
-on: [push]
-
-# # schedule every day
-# on:
-#   schedule:
-#     - cron: "0 0 * * *"
+# on: [push]
+# schedule every day
+on:
+  schedule:
+    - cron: "0 0 * * *"
 
 jobs:
   multinet-tools:
