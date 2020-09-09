@@ -48,6 +48,20 @@ kind load docker-image multinet-prysm --name kind
 helm install ./multinet-cluster  
 ```
 
+### Using a development slot
+
+#### Nimbus basic example
+
+**`NIMBUS_DEV_NODES` must be more then 0 in `values.yaml`**
+
+1. `kubectl exec --stdin --tty nimbus-dev-0 -- /bin/bash`
+2. `cd nimbus-src`
+3. `make update`
+4. `source env.sh`
+2. `NIMFLAGS="-d:insecure -d:chronicles_log_level=TRACE --warnings:off --hints:off --opt:speed -d:const_preset=/root/multinet/repo/data/testnet/config.yaml"`
+3. `nim c -o:beacon_node $NIMFLAGS beacon_chain/beacon_node`
+4. `./beacon_node --state-snapshot:/root/multinet/repo/data/testnet/genesis.ssz --bootstrap-file=/root/multinet/repo/data/testnet/bootstrap_nodes.txt`
+
 ## TODO
 
 - [ ] Integrate eth2stats
