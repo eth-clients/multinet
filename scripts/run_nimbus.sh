@@ -40,7 +40,9 @@ fi
 
 set -x # print commands
 
-wait_and_register_enr "$NIMBUS_DATA_DIR/beacon_node.enr" &
+if [ "$MULTINET_POD_NAME" == "nimbus-0" ]; then
+  wait_and_register_enr "$NIMBUS_DATA_DIR/beacon_node.enr" &
+fi
 
 $NIMBUS_BIN \
   --log-level=$LOG_LEVEL \
