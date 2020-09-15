@@ -27,7 +27,7 @@ SECRETS_DIR="${TESTNET_DIR}/secrets"
 NETWORK_BOOTSTRAP_FILE="${TESTNET_DIR}/bootstrap_nodes.txt"
 PRESET_FILE=${SIM_ROOT}/${SPEC_VERSION}.yaml
 
-NIMFLAGS="-d:insecure -d:chronicles_log_level=TRACE --warnings:off --hints:off --opt:speed -d:const_preset=$PRESET_FILE"
+NIMFLAGS="-d:insecure -d:chronicles_log_level=TRACE --warnings:off --hints:off --opt:speed -d:disableMarchNative -d:const_preset=$PRESET_FILE"
 NIMBUS_BIN="${BUILD_DIR}/nimbus"
 
 ls_validators () {
