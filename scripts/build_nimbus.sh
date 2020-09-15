@@ -25,17 +25,6 @@ if ((1)); then
   done
 fi
 
-# Cloning Nimbus if needed
-[[ -d "$NIMBUS_DIR" ]] || {
-  git clone https://github.com/status-im/nim-beacon-chain "$NIMBUS_DIR"
-  pushd "${NIMBUS_DIR}"
-  git checkout devel
-  # Initial submodule update
-  export GIT_LFS_SKIP_SMUDGE=1
-  git submodule update --init --recursive
-  popd
-}
-
 # Switching to Nimbus folder
 cd "${NIMBUS_DIR}"
 

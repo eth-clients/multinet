@@ -60,9 +60,9 @@ helm install ./multinet-cluster
 2. `cd nimbus-src`
 3. `make update`
 4. `source env.sh`
-2. `NIMFLAGS="-d:insecure -d:chronicles_log_level=TRACE --warnings:off --hints:off --opt:speed -d:const_preset=/root/multinet/repo/data/testnet/config.yaml"`
+2. `NIMFLAGS="-d:insecure -d:metrics -d:libp2p_expensive_metrics -d:chronicles_log_level=TRACE -d:chronicles_colors=off --warnings:off --hints:off --opt:speed -d:const_preset=/root/multinet/repo/data/testnet/config.yaml"`
 3. `nim c -o:beacon_node $NIMFLAGS beacon_chain/beacon_node`
-4. `./beacon_node --state-snapshot:/root/multinet/repo/data/testnet/genesis.ssz --bootstrap-file=/root/multinet/repo/data/testnet/bootstrap_nodes.txt`
+4. `./beacon_node --state-snapshot:/root/multinet/repo/data/testnet/genesis.ssz --bootstrap-file=/root/multinet/repo/data/testnet/bootstrap_nodes.txt --metrics`
 
 # Running just 3 nodes with docker-compose
 
