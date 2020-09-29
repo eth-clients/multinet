@@ -45,8 +45,8 @@ GO111MODULE=on go get github.com/wealdtech/ethereal
 WORKDIR /root/multinet
 
 COPY ./scripts/vars.sh /root/multinet/repo
-COPY ./scripts/mainnet.yaml /root/multinet/repo
-COPY ./scripts/minimal.yaml /root/multinet/repo
+RUN wget -O /root/multinet/repo/mainnet.yaml https://raw.githubusercontent.com/ethereum/eth2.0-specs/v0.12.3/configs/mainnet/phase0.yaml
+RUN wget -O /root/multinet/repo/minimal.yaml https://raw.githubusercontent.com/ethereum/eth2.0-specs/v0.12.3/configs/minimal/phase0.yaml
 
 WORKDIR /root/multinet/repo
 
