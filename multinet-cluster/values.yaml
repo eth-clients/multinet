@@ -1,6 +1,6 @@
 NIMBUS_NODES: 8
 # external nodes we manually manage
-NIMBUS_DEV_NODES: 0
+NIMBUS_DEV_NODES: 1
 # the path of the source code for the manually managed nodes
 # point it to an already existing source tree or
 # you will find the oritinal source in the container you can copy also
