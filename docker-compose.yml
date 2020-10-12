@@ -13,7 +13,7 @@ services:
       LOG_LEVEL: "INFO;TRACE:switch"
     volumes: 
       # editable source here
-      - nimbus-source:/root/multinet/repo/nim-beacon-chain
+      - nimbus-source:/root/multinet/repo/nimbus-eth2
       - multinet-deposits:/root/multinet/repo/deposits
       - multinet-data:/root/multinet/repo/data
     command: bash -c "./make_genesis.sh && ./run_nimbus.sh"

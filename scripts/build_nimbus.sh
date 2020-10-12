@@ -5,7 +5,7 @@ set -eo pipefail
 source "$(dirname "$0")/vars.sh"
 
 # Nimbus path
-NIMBUS_DIR=${NIMBUS_PATH:-"nim-beacon-chain"}
+NIMBUS_DIR=${NIMBUS_PATH:-"nimbus-eth2"}
 
 NIMBUS_DATA_DIR="${DATA_DIR}/nimbus"
 NIMBUS_VALIDATORS_DIR="${NIMBUS_DATA_DIR}/validators"

@@ -7,7 +7,7 @@ set -eo pipefail
 source "$(dirname "$0")/vars.sh"
 
 # Nimbus path
-NIMBUS_DIR=${NIMBUS_PATH:-"nim-beacon-chain"}
+NIMBUS_DIR=${NIMBUS_PATH:-"nimbus-eth2"}
 
 MULTINET_POD_NAME=${MULTINET_POD_NAME:-nimbus-0}
 NIMBUS_DATA_DIR="/root/multinet/repo/deposits/$MULTINET_POD_NAME"
@@ -54,5 +54,5 @@ $NIMBUS_BIN \
   --rpc-address="0.0.0.0" \
   --rpc-port=7000 \
   $BOOTNODES_ARG $NAT_FLAG \
-  --state-snapshot:$TESTNET_DIR/genesis.ssz \
+  --finalized-checkpoint-state:$TESTNET_DIR/genesis.ssz \
   --metrics

@@ -4,7 +4,7 @@ set -x
 set -eo pipefail
 
 # Nimbus path
-SRCDIR=${NIMBUS_PATH:-"nim-beacon-chain"}
+SRCDIR=${NIMBUS_PATH:-"nimbus-eth2"}
 
 # Read in variables
 cd "$(dirname "$0")"
@@ -18,7 +18,7 @@ mkdir -p "$DATA_DIR"
 
 # Cloning Nimbus if needed
 [[ -d "$SRCDIR" ]] || {
-  git clone -b devel https://github.com/status-im/nim-beacon-chain "$SRCDIR"
+  git clone -b devel https://github.com/status-im/nimbus-eth2 "$SRCDIR"
   pushd "${SRCDIR}"
   # Initial submodule update
   export GIT_LFS_SKIP_SMUDGE=1

@@ -3,7 +3,7 @@
 set -eo pipefail
 
 # Nimbus path
-SRCDIR=${NIMBUS_PATH:-"nim-beacon-chain"}
+SRCDIR=${NIMBUS_PATH:-"nimbus-eth2"}
 LIGHTHOUSE_DIR=${LIGHTHOUSE_DIR:-"lighthouse"}
 
 # Read in variables

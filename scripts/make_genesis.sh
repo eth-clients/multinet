@@ -202,7 +202,7 @@ echo "Deposits done."
 # GENESIS STATE
 
 # Nimbus path
-SRCDIR=${NIMBUS_PATH:-"nim-beacon-chain"}
+SRCDIR=${NIMBUS_PATH:-"nimbus-eth2"}
 DEPOSITS_DIR="/root/multinet/repo/deposits"
 
 NUM_VALIDATORS=$VALIDATOR_OFFSET
