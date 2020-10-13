@@ -3,6 +3,7 @@
 echo "Running nimbus"
 
 set -eo pipefail
+set -x # print commands
 
 source "$(dirname "$0")/vars.sh"
 
@@ -11,6 +12,10 @@ NIMBUS_DIR=${NIMBUS_PATH:-"nimbus-eth2"}
 
 MULTINET_POD_NAME=${MULTINET_POD_NAME:-nimbus-0}
 NIMBUS_DATA_DIR="/root/multinet/repo/deposits/$MULTINET_POD_NAME"
+
+chmod -R 750 "$NIMBUS_DATA_DIR"
+chmod -R 600 "$NIMBUS_DATA_DIR/validators"
+chmod -R 600 "$NIMBUS_DATA_DIR/secrets"
 
 # Switching to Nimbus folder
 cd "${NIMBUS_DIR}"
@@ -37,8 +42,6 @@ BOOTNODES_ARG=""
 if [[ -f $TESTNET_DIR/bootstrap_nodes.txt ]]; then
   BOOTNODES_ARG="--bootstrap-file=$TESTNET_DIR/bootstrap_nodes.txt"
 fi
-
-set -x # print commands
 
 if [ "$MULTINET_POD_NAME" == "nimbus-0" ]; then
   wait_and_register_enr "$NIMBUS_DATA_DIR/beacon_node.enr" &

@@ -50,6 +50,9 @@ $GO_PATH/bin/eth2-val-tools assign \
   --wallet-name="multinet-wallet"
 
 mv /root/multinet/repo/deposits/nimbus-$c/nimbus-keys /root/multinet/repo/deposits/nimbus-$c/validators
+chmod -R 750 /root/multinet/repo/deposits/nimbus-$c
+chmod -R 600 /root/multinet/repo/deposits/nimbus-$c/validators
+chmod -R 600 /root/multinet/repo/deposits/nimbus-$c/secrets
 
 VALIDATOR_OFFSET=$(($VALIDATOR_OFFSET + $NIMBUS_VALIDATORS))
 done
@@ -76,6 +79,9 @@ $GO_PATH/bin/eth2-val-tools assign \
   --wallet-name="multinet-wallet"
 
 mv /root/multinet/repo/deposits/nimbus-dev-$c/nimbus-keys /root/multinet/repo/deposits/nimbus-dev-$c/validators
+chmod -R 750 /root/multinet/repo/deposits/nimbus-dev-$c
+chmod -R 600 /root/multinet/repo/deposits/nimbus-dev-$c/validators
+chmod -R 600 /root/multinet/repo/deposits/nimbus-dev-$c/secrets
 
 VALIDATOR_OFFSET=$(($VALIDATOR_OFFSET + $NIMBUS_VALIDATORS))
 done
