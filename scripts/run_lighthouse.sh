@@ -45,11 +45,19 @@ fi
 
 set -x # print commands
 
+# import accounts
+echo "password1234" | target/release/lighthouse \
+  account validator import \
+  --datadir $LH_DATADIR \
+  --directory $LH_VALIDATORS_DIR \
+  --reuse-password \
+  --stdin-inputs
+
 # beacon node
 target/release/lighthouse \
   bn \
-	--debug-level debug \
-	--datadir $LH_DATADIR \
+  --debug-level debug \
+  --datadir $LH_DATADIR \
   --testnet-dir $TESTNET_DIR \
   --dummy-eth1 \
   --spec $SPEC_VERSION \
@@ -63,15 +71,15 @@ target/release/lighthouse \
 
 sleep 5
 
+rm $LH_DATADIR/validators/validator_key_cache.json.lock || true
+
 # validator client
-target/release/lighthouse \
+echo "password1234" | target/release/lighthouse \
   vc \
-	--debug-level debug \
+  --debug-level debug \
   --spec $SPEC_VERSION \
-	--datadir $LH_VALIDATORS_DIR \
-	--secrets-dir $LH_SECRETS_DIR \
-	--testnet-dir $TESTNET_DIR \
-	--auto-register \
+  --datadir $LH_DATADIR \
+  --testnet-dir $TESTNET_DIR \
   --allow-unsynced
 
 set +x
