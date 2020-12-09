@@ -7,6 +7,7 @@ metadata:
     tier: nimbus
 spec:
   replicas: {{ .Values.NIMBUS_NODES }}
+  serviceName: nimbus
   selector:
     matchLabels:
       tier: nimbus
