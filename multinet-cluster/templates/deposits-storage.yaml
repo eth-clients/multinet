@@ -6,7 +6,7 @@ metadata:
     name: deposits-storage
 spec:
   capacity:
-    storage: 100Gi
+    storage: 50Gi
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
@@ -14,5 +14,5 @@ spec:
   mountOptions:
     - hard
   nfs:
-    path: /eth20
-    server: 10.80.135.178
+    path: /
+    server: nfs-server.default.svc.cluster.local
