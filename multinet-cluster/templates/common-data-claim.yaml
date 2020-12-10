@@ -4,10 +4,7 @@ metadata:
   name: common-data
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
-      storage: 100Gi
-  selector:
-    matchLabels:
-      name: common-data
+      storage: 50Gi
