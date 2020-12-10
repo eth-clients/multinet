@@ -4,7 +4,7 @@ metadata:
   name: common-data
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 50Gi
