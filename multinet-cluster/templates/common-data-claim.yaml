@@ -4,7 +4,8 @@ metadata:
   name: common-data
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
+  storageClassName: ""
   resources:
     requests:
       storage: 50Gi
