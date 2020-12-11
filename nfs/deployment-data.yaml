@@ -17,11 +17,11 @@ spec:
           image: gcr.io/google_containers/volume-nfs:0.8
           ports:
             - name: nfs
-              containerPort: 2050
+              containerPort: 2049
             - name: mountd
-              containerPort: 20050
+              containerPort: 20048
             - name: rpcbind
-              containerPort: 112
+              containerPort: 111
           securityContext:
             privileged: true
           volumeMounts:

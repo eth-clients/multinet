@@ -1,30 +1,30 @@
-NIMBUS_NODES: 2
+NIMBUS_NODES: 8
 # external nodes we manually manage
 NIMBUS_DEV_NODES: 0
 # the path of the source code for the manually managed nodes
 # point it to an already existing source tree or
 # you will find the oritinal source in the container you can copy also
 NIMBUS_SOURCE_PATH: /run/desktop/mnt/host/e/tmp/multinet/nbc
-NIMBUS_VALIDATORS: 2
+NIMBUS_VALIDATORS: 64
 NIMBUS_LOG_LEVEL: INFO;TRACE:switch,multistream
 
-LIGHTHOUSE_NODES: 1
+LIGHTHOUSE_NODES: 8
 # external nodes we manually manage
 LIGHTHOUSE_DEV_NODES: 0
 # the path of the source code for the manually managed nodes
 # point it to an already existing source tree or
 # you will find the oritinal source in the container you can copy also
 LIGHTHOUSE_SOURCE_PATH: /run/desktop/mnt/host/e/tmp/multinet/lh
-LIGHTHOUSE_VALIDATORS: 1
+LIGHTHOUSE_VALIDATORS: 64
 
-PRYSM_NODES: 1
+PRYSM_NODES: 8
 # external nodes we manually manage
 PRYSM_DEV_NODES: 0
 # the path of the source code for the manually managed nodes
 # point it to an already existing source tree or
 # you will find the oritinal source in the container you can copy also
 PRYSM_SOURCE_PATH: /run/desktop/mnt/host/e/tmp/multinet/pry
-PRYSM_VALIDATORS: 1
+PRYSM_VALIDATORS: 64
 
 # DEV_NODES should use the <client>-dev-N folders for deposits details
 # see respective run_<client> scripts for usage
