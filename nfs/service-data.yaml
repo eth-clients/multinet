@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nfs-server-data
+spec:
+  ports:
+    - name: nfs
+      port: 2050
+    - name: mountd
+      port: 20050
+    - name: rpcbind
+      port: 112
+  selector:
+    role: nfs-server-data

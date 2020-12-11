@@ -14,5 +14,5 @@ spec:
   mountOptions:
     - hard
   nfs:
-    path: /data/deposits
-    server: nfs-server.default.svc.cluster.local
+    path: /
+    server: nfs-server-deposit.default.svc.cluster.local

@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nfs-server
+  name: nfs-server-deposit
 spec:
   replicas: 1
   selector:
     matchLabels:
-      role: nfs-server
+      role: nfs-server-deposit
   template:
     metadata:
       labels:
-        role: nfs-server
+        role: nfs-server-deposit
     spec:
       containers:
         - name: nfs-server
@@ -25,12 +25,11 @@ spec:
           securityContext:
             privileged: true
           volumeMounts:
-            - mountPath: /data/data
-              name: nfs-pvc
-            - mountPath: /data/deposits
-              name: nfs-pvc
+            - mountPath: /deposit
+              name: nfs-deposit
+
       volumes:
-        - name: nfs-pvc
+        - name: nfs-deposit
           gcePersistentDisk:
-            pdName: nfs-disk
+            pdName: nfs-deposit
             fsType: ext4

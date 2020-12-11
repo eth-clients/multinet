@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nfs-server
+  name: nfs-server-deposit
 spec:
   ports:
     - name: nfs
@@ -11,4 +11,4 @@ spec:
     - name: rpcbind
       port: 111
   selector:
-    role: nfs-server
+    role: nfs-server-deposit
