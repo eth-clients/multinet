@@ -83,6 +83,22 @@ docker run -it --rm -v nimbus-source:/tmp/nimbus ubuntu bash
 ```
 Using this trick you could even attach via visual studio code and SSH integration.
 
+## Google Cloud Engine (GKE) Kubernetes
+In order to make `ReadWriteMany` on `common-data.yaml` and `deposits-storage.yml` you need to create NFS within region.
+To do this you must create compute disk
+Lets assume that you are using europe-west4-a for your GKE.
+Example using gcloud sdk:
+`gcloud compute disks create --size=200GB --zone=europe-west4-a nfs-disk`
+Notice that `nfs-disk` must match helm charts name, so in order to experiment with rename you must also rename it there.
+
+After creating disk you must deploy nfs using kubectl.
+Example from root of this repo:
+`kubectl apply -f ./nfs/deployment.yaml`
+`kubectl apply -f ./nfs/service.yaml`
+
+Files should be mounted to `/data/$DIR` where `$DIR` is with consecutive: 
+`data` for common-data.yml
+`depostits` for deposits-storage.yml
 
 # License
 

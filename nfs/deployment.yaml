@@ -25,7 +25,9 @@ spec:
           securityContext:
             privileged: true
           volumeMounts:
-            - mountPath: /data
+            - mountPath: /data/data
+              name: nfs-pvc
+            - mountPath: /data/deposits
               name: nfs-pvc
       volumes:
         - name: nfs-pvc

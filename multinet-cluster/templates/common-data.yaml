@@ -14,5 +14,5 @@ spec:
   mountOptions:
     - hard
   nfs:
-    path: /
+    path: /data/data
     server: nfs-server.default.svc.cluster.local

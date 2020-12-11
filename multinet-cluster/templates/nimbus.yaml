@@ -78,13 +78,6 @@ spec:
           - if [[ $MULTINET_POD_NAME == "nimbus-0" ]]; then ./make_genesis.sh; else ./wait_for.sh -t 0 bootstrap:50000 -- echo "Done"; fi
           # inject environment variables
           env:
-            # We use this to dedect with are 0, and run only on 0 node
-            - name: MULTINET_POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            # inject environment variables
-          env:
             - name: MULTINET_POD_NAME
               valueFrom:
                 fieldRef:

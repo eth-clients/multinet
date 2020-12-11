@@ -1,11 +1,11 @@
-NIMBUS_NODES: 1
+NIMBUS_NODES: 2
 # external nodes we manually manage
 NIMBUS_DEV_NODES: 0
 # the path of the source code for the manually managed nodes
 # point it to an already existing source tree or
 # you will find the oritinal source in the container you can copy also
 NIMBUS_SOURCE_PATH: /run/desktop/mnt/host/e/tmp/multinet/nbc
-NIMBUS_VALIDATORS: 1
+NIMBUS_VALIDATORS: 2
 NIMBUS_LOG_LEVEL: INFO;TRACE:switch,multistream
 
 LIGHTHOUSE_NODES: 1
