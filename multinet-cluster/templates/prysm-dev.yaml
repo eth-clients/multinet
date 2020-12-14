@@ -7,6 +7,7 @@ metadata:
     tier: prysm-dev
 spec:
   replicas: {{ .Values.PRYSM_DEV_NODES }}
+  serviceName: prysm-dev
   selector:
     matchLabels:
       tier: prysm-dev

@@ -7,6 +7,7 @@ metadata:
     tier: lighthouse
 spec:
   replicas: {{ .Values.LIGHTHOUSE_NODES }}
+  serviceName: lighthouse
   selector:
     matchLabels:
       tier: lighthouse
@@ -20,9 +21,11 @@ spec:
         - name: deposits
           persistentVolumeClaim:
             claimName: deposits-storage
+            readOnly: false
         - name: common-data
           persistentVolumeClaim:
             claimName: common-data
+            readOnly: false
       containers:
         - name: lighthouse
           image: eth2clients/multinet-lighthouse

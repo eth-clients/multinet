@@ -45,8 +45,9 @@ kind load docker-image multinet-prysm --name kind
 *Customize `multinet-cluster/values.yaml`*
 
 ```
-helm install ./multinet-cluster  
+helm install $DEPLOYMENT_NAME ./multinet-cluster  
 ```
+where `$DEPLOYMENT_NAME` is your name choice
 
 ### Using a development slot
 
@@ -79,6 +80,36 @@ docker run -it --rm -v nimbus-source:/tmp/nimbus ubuntu bash
 ```
 Using this trick you could even attach via visual studio code and SSH integration.
 
+## Google Cloud Engine (GKE) Kubernetes
+In order to make `ReadWriteMany` on `common-data.yaml` and `deposits-storage.yml` you need to create NFS within region.
+To do this you must create 2 compute disks. One for common-data and one for deposits-storage
+Lets assume that you are using europe-west4-a for your GKE.
+Example using gcloud sdk:
+`gcloud compute disks create --size=200GB --zone=europe-west4-a nfs-data`
+`gcloud compute disks create --size=200GB --zone=europe-west4-a nfs-deposit`
+Notice that `nfs-disk` must match helm charts name, so in order to experiment with rename you must also rename it there.
+
+After creating disk you must deploy nfs using kubectl.
+Example from root of this repo:
+`./nfs/reapply.sh`
+
+Files should be mounted to `/data/$DIR` where `$DIR` is with consecutive: 
+`data` for common-data.yml
+`depostits` for deposits-storage.yml
+
+In order to check whats going on on disk itself do:
+`kubectl exec -it $NFS_SERVER_POD_NAME bash`
+
+To check `$NFS_SERVER_POD_NAME` do `kubectl get pods`
+
+When you want to expose eth2stats you need to export external ips:
+https://kubernetes.io/docs/tutorials/stateless-application/expose-external-ip-address/
+
+Example of exposure:
+`kubectl expose deployment eth2stats-server --type=LoadBalancer --name=svrbalancer`
+`kubectl expose deployment eth2stats-dashboard --type=LoadBalancer --name=dashbalancer`
+
+What is problematic is the config of ethstats.
 
 # License
 

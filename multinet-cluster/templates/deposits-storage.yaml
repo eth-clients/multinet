@@ -6,8 +6,7 @@ metadata:
     name: deposits-storage
 spec:
   capacity:
-    storage: 5Gi
-  volumeMode: Filesystem
+    storage: 50Gi
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
@@ -15,5 +14,5 @@ spec:
   mountOptions:
     - hard
   nfs:
-    path: /data/data
-    server: 172.17.0.2
+    path: /
+    server: nfs-server-deposit.default.svc.cluster.local

@@ -8,30 +8,31 @@ NIMBUS_SOURCE_PATH: /run/desktop/mnt/host/e/tmp/multinet/nbc
 NIMBUS_VALIDATORS: 64
 NIMBUS_LOG_LEVEL: INFO;TRACE:switch,multistream
 
-LIGHTHOUSE_NODES: 8
+LIGHTHOUSE_NODES: 2
 # external nodes we manually manage
 LIGHTHOUSE_DEV_NODES: 0
 # the path of the source code for the manually managed nodes
 # point it to an already existing source tree or
 # you will find the oritinal source in the container you can copy also
 LIGHTHOUSE_SOURCE_PATH: /run/desktop/mnt/host/e/tmp/multinet/lh
-LIGHTHOUSE_DEV_NODES: 0
 LIGHTHOUSE_VALIDATORS: 64
 
-PRYSM_NODES: 8
+PRYSM_NODES: 2
 # external nodes we manually manage
 PRYSM_DEV_NODES: 0
 # the path of the source code for the manually managed nodes
 # point it to an already existing source tree or
 # you will find the oritinal source in the container you can copy also
 PRYSM_SOURCE_PATH: /run/desktop/mnt/host/e/tmp/multinet/pry
-PRYSM_DEV_NODES: 0
 PRYSM_VALIDATORS: 64
 
 # DEV_NODES should use the <client>-dev-N folders for deposits details
 # see respective run_<client> scripts for usage
 
-ETH2STATS_DASHBOARD_HOST: localhost
+ETH2STATS_DASHBOARD_HOST: 34.90.31.103
 ETH2STATS_DASHBOARD_PORT: 30000
-ETH2STATS_SERVER_HOST: localhost
+ETH2STATS_SERVER_HOST: 34.91.196.32
 ETH2STATS_SERVER_PORT: 30001
+# Use it if you expose in GKE
+ETH2STATS_DASHBOARD_EXPOSURE_PORT: 80
+ETH2STATS_SERVER_EXPOSURE_PORT: 8080

@@ -7,6 +7,7 @@ metadata:
     tier: prysm
 spec:
   replicas: {{ .Values.PRYSM_NODES }}
+  serviceName: prysm
   selector:
     matchLabels:
       tier: prysm
