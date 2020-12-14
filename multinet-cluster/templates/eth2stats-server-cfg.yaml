@@ -6,6 +6,7 @@ data:
   payload: >
     http:
       # Enable/disable development CORS
+      port: 8080
       dev-cors: true
       # Allowed hosts for HTTP API development CORS
       dev-cors-host: "*"

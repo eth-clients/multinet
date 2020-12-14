@@ -106,6 +106,15 @@ In order to check whats going on on disk itself do:
 
 To check `$NFS_SERVER_POD_NAME` do `kubectl get pods`
 
+When you want to expose eth2stats you need to export external ips:
+https://kubernetes.io/docs/tutorials/stateless-application/expose-external-ip-address/
+
+Example of exposure:
+`kubectl expose deployment eth2stats-server --type=LoadBalancer --name=svrbalancer`
+`kubectl expose deployment eth2stats-dashboard --type=LoadBalancer --name=dashbalancer`
+
+What is problematic is the config of ethstats.
+
 # License
 
 CC0 (Creative Common Zero)
